@@ -1,0 +1,89 @@
+--## TEMA 8 - VACUUMDB, REINDEXDB
+
+export PGPORT=5432
+export PGDATA=/home/postgres/curso/I1/
+
+psql
+
+\c bd_pruebas1
+--## se importa un tabla grande
+--DROP TABLE IF EXISTS app_prueba.tdocumentos;
+\! psql bd_pruebas1 < /curso/tema8-app_prueba.tdocumentos-curso.sql
+
+--Tamaño Tabla
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+
+--Tamaño Indice
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+
+--Numero de Filas
+SELECT reltuples::bigint AS estimate FROM pg_class WHERE  oid = 'app_prueba.tdocumentos'::regclass;
+SELECT count(*) FROM app_prueba.tdocumentos;
+SELECT n_live_tup, last_vacuum, vacuum_count, last_analyze, analyze_count FROM pg_stat_all_tables WHERE schemaname='app_prueba' AND relname='tdocumentos';
+
+
+--## se lanza un update sobre un campo de toda la tabla
+UPDATE app_prueba.tdocumentos SET f_actualizacion=now();
+
+
+--Se vuelve a revisar Tamaño Tabla, se observa aumento de tamaño
+SELECT count(*) FROM app_prueba.tdocumentos;
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+
+--Se vuelve a revisar Tamaño Indice, se observa aumento de tamaño
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+
+
+--## uso de VACUUM y REINDEX
+--## solo analiza la base de datos indicada
+\! vacuumdb -Zv bd_pruebas1
+
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+SELECT n_live_tup, last_vacuum, vacuum_count, last_analyze, analyze_count FROM pg_stat_all_tables WHERE schemaname='app_prueba' AND relname='tdocumentos';
+
+--## limpieza sin liberar disco
+\! vacuumdb -v bd_pruebas1
+
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+SELECT n_live_tup, last_vacuum, vacuum_count, last_analyze, analyze_count FROM pg_stat_all_tables WHERE schemaname='app_prueba' AND relname='tdocumentos';
+
+--## libera espacio en disco sin recalcular estadisticas de todas las tablas de bd_pruebas
+\! vacuumdb -fv bd_pruebas1
+
+--Se vuelve a comprobar los tamaños de tabla e indice
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+\! ls -lh $PGDATA/<pg_relation_filepath>
+SELECT n_live_tup, last_vacuum, vacuum_count, last_analyze, analyze_count FROM pg_stat_all_tables WHERE schemaname='app_prueba' AND relname='tdocumentos';
+
+
+--Volvemos a modificar datos
+UPDATE app_prueba.tdocumentos SET f_actualizacion=now();
+
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+
+--## libera espacio en disco y calcula estadisticas de la tabla
+\! vacuumdb -vfzt app_prueba.tdocumentos bd_pruebas1
+
+SELECT pg_relation_filenode('app_prueba.tdocumentos'),pg_relation_filepath('app_prueba.tdocumentos'),pg_size_pretty(pg_relation_size('app_prueba.tdocumentos'));
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+SELECT n_live_tup, last_vacuum, vacuum_count, last_analyze, analyze_count FROM pg_stat_all_tables WHERE schemaname='app_prueba' AND relname='tdocumentos';
+
+
+
+
+--## Reconstruccion de todos los indices de una tabla
+REINDEX TABLE app_prueba.tdocumentos;
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+--## Reconstruccion de un indice
+REINDEX INDEX app_prueba.idx_tdocumentos_issn;
+SELECT pg_relation_filenode('app_prueba.idx_tdocumentos_issn'),pg_relation_filepath('app_prueba.idx_tdocumentos_issn'),pg_size_pretty(pg_relation_size('app_prueba.idx_tdocumentos_issn'));
+

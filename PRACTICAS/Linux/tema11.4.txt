@@ -1,0 +1,157 @@
+## TEMA 11 - Replicacion a servidor "warm standby"
+## 11.4.- Opcion 3, replicacion sincrona sin slot
+
+## Desde un terminal SSH
+export PGPORT=5432
+export PGDATA=$HOME/curso/I1
+
+vi $PGDATA/pg_hba.conf
+ host    replication    postgres    127.0.0.1/32    trust
+
+vi $PGDATA/postgresql.conf
+ synchronous_commit=on
+ synchronous_standby_names = '*'
+
+## se vuelve a levantar la INSTANCIA1 (si se dejo parada si no "pg_ctl reload")
+## esto realmente hay que hacerlo despues de levantar el servidor secundario
+pg_ctl start -D $PGDATA
+tail -200f $PGDATA/log/postgresql-2019-
+
+
+## abrir otro terminal SSH
+## la INSTANCIA 2 usa otro puerto (por estar en la misma maquina)
+export PGPORT=5400
+export PGDATA=$HOME/curso/I2
+
+
+##################################################
+## Restauramos en otro directorio la copia de seguridad del Tema9, 
+## la copia base hecha con pg_start/stop_backup y con el modo archivado habilitado
+pg_ctl stop
+pg_ctl status
+cd
+ls $PGDATA
+rm -rf $PGDATA/*
+rm -rf $HOME/curso/wal/I2/*
+chmod 0700 $PGDATA
+cp -a $HOME/curso/backups/base_I1/* $PGDATA
+## ¡¡¡ Al borrar el contenido de $PGDATA/pg_wal de la restauracion, SE NECESITARA la información de "backup_label" !!!
+rm $PGDATA/pg_wal/*
+rm $PGDATA/pg_wal/archive_status/*
+## Se recuperan los WAL generados durante la copia de seguridad
+## y se dejan en donde los guarda el Servidor Principal (I1, $HOME/curso/wal/I1)
+ls -lhrt $PGDATA/wal_generados
+ls -lhrt $HOME/curso/wal/I1
+chmod 0400 $HOME/curso/wal/I1/*
+cp -a $PGDATA/wal_generados/* $HOME/curso/wal/I1
+chmod 0600 $HOME/curso/wal/I1/*
+
+vi $PGDATA/postgresql.conf
+ port = 5400
+ hot_standby = off
+## FIN Pasos Recuperación
+
+
+##################################################
+## Se arranca el Servidor Secundario
+## el "restore_command" solo se usa en el momento de arrancar para recuperar WALs antiguos
+echo "standby_mode = 'on'" > $PGDATA/recovery.conf
+echo "restore_command = 'cp /home/postgres/curso/wal/I1/%f %p'" >> $PGDATA/recovery.conf
+echo "trigger_file = '/home/postgres/curso/I2/fin_replica.txt'" >> $PGDATA/recovery.conf
+echo "primary_conninfo = 'host=localhost port=5432'" >> $PGDATA/recovery.conf
+echo "recovery_end_command = 'rm -f /home/postgres/curso/I2/fin_replica.txt'" >> $PGDATA/recovery.conf
+cat $PGDATA/recovery.conf
+
+rm $PGDATA/log/*
+pg_ctl start -D $PGDATA
+
+## Se comprueba que no deja acceder
+psql bd_pruebas1 app_prueba
+
+## no hay recovery.done
+ls $PGDATA/recovery*
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+## existe proceso "walreceiver"
+ps -ef | grep postgres
+tail -200f $PGDATA/log/postgresql-2019-
+
+
+
+## en el terminal con la INSTANCIA1
+## se comprueba el log: less $PGDATA/log/postgresql-2019-
+## "LOG:  el standby «walreceiver» es ahora el standby sincronico con prioridad 1"
+## existe proceso "walsender"
+ps -ef | grep walsender
+
+psql
+ --vista con las replicaciones que se estan haciendo
+ --sync_state=sync
+ SELECT * FROM pg_stat_replication;
+
+ \c bd_pruebas1
+ \i /curso/tema8-app_prueba.tdocumentos-curso.sql
+
+ SELECT COUNT(*) FROM app_prueba.tdocumentos;
+ SELECT * FROM pg_stat_replication;
+
+ \c bd_pruebas4
+ \dt
+ INSERT INTO tpitr3 VALUES (8, 'Ocho');
+ SELECT * FROM tpitr3;
+ CREATE TABLE treplica3 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO treplica3 VALUES (1, '3.Uno');
+ INSERT INTO treplica3 VALUES (2, '3.Dos');
+ SELECT * FROM treplica3;
+ SELECT * FROM pg_stat_replication;
+
+## en el terminal con la INSTANCIA2
+## se comprueban los mensajes del comando tail
+## se pone fin al modo de Replicacion (tambien se puede usar el comando "pg_ctl promote")
+touch /home/postgres/curso/I2/fin_replica.txt
+ls $PGDATA/recovery*
+## ya no existe proceso "walreceiver"
+ps -ef | grep walreceiver
+
+
+## en el terminal con la INSTANCIA1
+ --la vista con las replicaciones no tiene datos
+ select * from pg_stat_replication;
+ -- se intenta insertar un nuevo dato que no debe aparecer en la replica,
+ -- pero no termina, se queda esperando a terminar la transaccion
+ INSERT INTO treplica3 VALUES (3, '3.Tres');
+ 
+## se abre otro terminal con la INSTANCIA1
+export PGPORT=5432
+export PGDATA=$HOME/curso/I1
+vi $PGDATA/postgresql.conf
+ #synchronous_standby_names = '*'
+pg_ctl reload
+tail -200f $PGDATA/log/postgresql-2019-
+
+## en el otro terminal con la INSTANCIA1
+ -- El INSERT ya ha terminado
+ SELECT * FROM treplica3;
+ \q
+
+
+## en el terminal con la INSTANCIA2
+## se comprueban que estan los datos hasta que se detuvo la replicacion
+psql bd_pruebas4
+ SELECT pg_is_in_recovery();
+ \l
+ \dt
+ SELECT * FROM tpitr3;
+ SELECT * FROM treplica3;
+ \c bd_pruebas1 app_prueba
+ SELECT count(*) FROM app_prueba.tdocumentos;
+ \dt
+ SELECT * FROM test1;
+ INSERT INTO test1 VALUES (12, 'fin repli2');
+ SELECT * FROM test1;
+\q
+pg_ctl stop
+

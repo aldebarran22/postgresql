@@ -1,0 +1,7 @@
+En las practicas
+ssh root@127.0.0.1 -p 2222
+scp -vP 2222 *.txt postgres@127.0.0.1:/curso
+
+psql -p 5432
+
+Se dejan las practicas en /curso

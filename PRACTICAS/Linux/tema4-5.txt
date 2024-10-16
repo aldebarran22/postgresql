@@ -1,0 +1,69 @@
+## TEMAS 4 y 5 - Crear una Instancia, uso psql
+
+## Crear estructura de directorios que se usaran en varias practicas
+
+mkdir -p /home/postgres/curso/I1
+mkdir -p /home/postgres/curso/I2
+mkdir -p /home/postgres/curso/wal/I1
+mkdir -p /home/postgres/curso/wal/I2
+mkdir -p /home/postgres/curso/backups
+
+
+## crear la instancia
+export PGDATA=/home/postgres/curso/I1/
+export PGPORT=5432
+initdb --lc-collate='C' -D $PGDATA
+
+
+## ver estructura directorios
+cd $PGDATA
+
+## configurar "postgresql.conf"
+    listen_addresses = 'localhost,192.168.xxx.xxx'
+    port = 5432	
+    max_connections = 20
+
+    shared_buffers = 128MB
+    work_mem = 16MB
+    maintenance_work_mem = 64MB
+
+    log_destination = 'stderr'
+    logging_collector = on
+    log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+    log_min_messages = notice
+    log_connections = on
+    log_disconnections = on
+    log_line_prefix = '<%t-%h-%p-%d.%u.%a-%c-%x> ' 
+    log_statement = 'mod'
+	
+    log_autovacuum_min_duration = 0
+
+
+## configurar "pg_hba.conf"
+    # "local" is for Unix domain socket connections only 
+    local   all		all		peer 
+    # IPv4 local connections: 
+    host    all        	all		127.0.0.1/32       	trust
+
+
+## Arrancar/Parar la instancia, en otro terminal ver log: $PGDATA/pg_log
+pg_ctl start -D $PGDATA
+ps -ef | grep postgres
+
+pg_ctl stop
+pg_ctl restart
+pg_ctl reload
+pg_ctl status
+
+
+## psql
+    \l
+    \db
+    \dt
+    \du
+    \dx
+    \connect template1
+    \conninfo
+    \q
+
+

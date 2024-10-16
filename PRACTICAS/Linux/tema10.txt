@@ -1,0 +1,140 @@
+## TEMA 10 - PITR
+
+## asegurarse de tener una copia fisica segun ultimas practicas del TEMA 9
+## creamos en la Instancia1 nuevos objetos
+export PGPORT=5432
+export PGDATA=$HOME/curso/I1/
+
+psql
+ DROP DATABASE IF EXISTS bd_pruebas4;
+ CREATE DATABASE bd_pruebas4;
+ COMMENT ON DATABASE bd_pruebas4 IS 'BD 4 para pruebas PITR';
+ \l
+ \c bd_pruebas4
+ CREATE TABLE tpitr1 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr1 VALUES (1, 'Uno');
+ INSERT INTO tpitr1 VALUES (2, 'Dos');
+ SELECT * FROM tpitr1;
+ 
+ --creamos un punto de recuperacion
+ SELECT pg_create_restore_point('rp-pitr1');
+ 
+ CREATE TABLE tpitr2 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr2 VALUES (3, 'Tres');
+ INSERT INTO tpitr2 VALUES (4, 'Cuatro');
+ \dt
+
+ --forzamos a almacenar archivos WAL para que archive el punto de recuperacion
+ SELECT pg_current_wal_lsn();
+ SELECT pg_walfile_name(pg_current_wal_lsn());
+
+ SELECT pg_switch_wal();
+ SELECT pg_current_wal_lsn();
+ SELECT pg_walfile_name(pg_current_wal_lsn());
+ \! ls -lrt $PGDATA/pg_wal
+ \! ls -lrt $HOME/curso/wal/I1
+ 
+ CREATE TABLE tpitr3 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr3 VALUES (5, 'cinco');
+ \dt
+ \q
+## se deja parada la Instancia1
+pg_ctl stop
+
+## al parar una instancia puede que no almacene el ultimo WAL escrito
+ls -lrt $PGDATA/pg_wal
+ls -lrt $HOME/curso/wal/I1
+
+
+##################################################
+## Restauramos en otro directorio la copia de seguridad del Tema9, 
+## la copia base hecha con pg_start/stop_backup y con el modo archivado habilitado
+pg_ctl stop
+pg_ctl status
+cd
+ls $HOME/curso/I2
+rm -rf $HOME/curso/I2/*
+rm -rf $HOME/curso/wal/I2/*
+chmod 0700 $HOME/curso/I2
+cp -a $HOME/curso/backups/base_I1/* $HOME/curso/I2
+## ¡¡¡ Al borrar el contenido de pg_wal/ de la restauracion, SE NECESITARA la información de "backup_label" !!!
+rm $HOME/curso/I2/pg_wal/*
+rm $HOME/curso/I2/pg_wal/archive_status/*
+ls -lhrt $HOME/curso/I1/pg_wal/
+## Se copian los WAL generados durante la copia de seguridad 
+## y los generados antes de parar I1 para tenerlos todos juntos
+chmod 0400 $HOME/curso/I2/wal_generados/*
+cp $HOME/curso/wal/I1/* $HOME/curso/I2/wal_generados/
+#####convendria copiar los siguientes WAL de I1/pg_wal no trasladados por "archive_command": cp $HOME/curso/I1/pg_wal/<ultimos> $HOME/curso/I2/wal_generados
+chmod 0600 $HOME/curso/I2/wal_generados/*
+ls -lhrt $HOME/curso/I2/wal_generados
+
+
+export PGPORT=5432
+export PGDATA=$HOME/curso/I2/
+rm $PGDATA/log/*.log
+
+## PITR hasta RP 'rp-pitr1'
+## se crea un recovery.conf para que termine al llegar a un punto de recuperacion
+## los WAL que necesite y no los encuentre en I2/pg_wal 
+## los busca en la copia I2/wal_generados con el parametro 'restore_command'
+echo "restore_command = 'cp /home/postgres/curso/I2/wal_generados/%f %p'" > $PGDATA/recovery.conf
+echo "recovery_target_name = 'rp-pitr1'" >> $PGDATA/recovery.conf
+cat $PGDATA/recovery.conf
+ls $PGDATA
+
+pg_ctl start -D $PGDATA
+ls $PGDATA/recovery*
+ls $PGDATA/backup_label*
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+ls $PGDATA/log/
+## se comprueba el log: less $PGDATA/log/postgresql-2019-0
+
+## por defecto "hot_standby = on" por lo que se permite acceso de lectura
+## se comprueban que estan los datos hasta el primer punto de recuperacion
+psql bd_pruebas4
+ SELECT pg_is_in_recovery();
+ SELECT pg_is_wal_replay_paused();
+ \l
+ \dt
+ SELECT * FROM tpitr1;
+
+--Tenemos dos opciones:
+-- Dar por finalizada la recuperación con: SELECT pg_wal_replay_resume();
+-- O seguir recuperando datos haciendo lo siguiente:
+ \q
+pg_ctl stop
+
+## se crea un recovery.conf para que termine cuando lea todos los WAL
+## los WAL que necesite y no los encuentre en I2/pg_wal 
+## los busca en la copia I2/wal_generados con el parametro 'restore_command'
+echo "restore_command = 'cp /home/postgres/curso/I2/wal_generados/%f %p'" > $PGDATA/recovery.conf
+cat $PGDATA/recovery.conf
+##tambien funciona añadiendo una fecha superior: echo "recovery_target_time = '2019-06-30 14:45:00'" >> $PGDATA/recovery.conf
+##o con este otro parametro: echo "recovery_target_timeline = 'latest'" >> $PGDATA/recovery.conf
+
+pg_ctl start -D $PGDATA
+ls $PGDATA/recovery*
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+ls $PGDATA/log/
+## se comprueba el log: less $PGDATA/log/postgresql-2019-0
+
+## se comprueban que estan los datos hasta que se apago I1
+## al recuperar todos los datos sale automáticamente del modo recuperacion
+psql bd_pruebas4
+ SELECT pg_is_in_recovery();
+ \l
+ \dt
+ SELECT * FROM tpitr3;
+

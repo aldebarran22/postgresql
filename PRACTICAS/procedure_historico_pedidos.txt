@@ -1,0 +1,11 @@
+crear un procedimiento que le pasamos un año:
+- Y tiene que crear el historio de ese año
+- Comprobar si la tabla del historico existe y si ya se ha realizado
+el historico de ese año.
+- Si luego añadimos otro año al histórico tiene que mantener lo que tenía.
+- Pasar un parámetro para eliminar o no los registro del origen
+
+call crearHistoPedidos(1996) --> tiene que crear la tabla
+call crearHistoPedidos(1997)
+call crearHistoPedidos(1997) --> No hace nada
+

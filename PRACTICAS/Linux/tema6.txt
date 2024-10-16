@@ -1,0 +1,156 @@
+--## TEMA 6 - Crear BBDD, Usuarios, Pruebas de acceso
+
+export PGPORT=5432
+export PGDATA=/home/postgres/curso/I1/
+
+psql
+
+--## crear una Base de Datos con usuarios y esquemas
+--DROP DATABASE IF EXISTS bd_pruebas1;
+CREATE DATABASE bd_pruebas1;
+COMMENT ON DATABASE bd_pruebas1 IS 'BD 1 para pruebas.';
+
+\l
+
+--OID de la base de datos, coincide con el directorio en $PGDATA/base 
+SELECT datid,datname from pg_stat_database;
+\! ls -l $PGDATA/base
+
+
+--## Se crea un nuevo usuario propietario para que no sea el superusurio
+--## los usuarios son objetos globales para toda la instancia
+\du
+--DROP ROLE IF EXISTS u_pruebas1;
+CREATE ROLE u_pruebas1 
+    WITH NOSUPERUSER NOCREATEDB CREATEROLE LOGIN
+         /* establecer con \password */
+         PASSWORD NULL
+;
+COMMENT ON ROLE u_pruebas1 IS 'Usuario propietario de la base de datos "bd_pruebas1"';
+\password u_pruebas1
+
+select * from pg_shadow where usename='u_pruebas1';
+--ENCRYPTED PASSWORD 'mdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+\du
+
+ALTER DATABASE bd_pruebas1 OWNER TO u_pruebas1;
+\l+
+
+
+--## Crear un nuevo usuario y asignarle un esquema
+\c bd_pruebas1
+
+\dn+
+--Se quita el permiso para crear objetos en el esquema PUBLIC al resto de usuarios
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+
+
+--DROP ROLE IF EXISTS app_prueba;
+CREATE ROLE app_prueba 
+    WITH NOSUPERUSER NOCREATEDB NOCREATEROLE LOGIN
+         ADMIN u_pruebas1
+         /* establecer con \password */
+         PASSWORD NULL
+;
+COMMENT ON ROLE app_prueba IS 'Usuario para la aplicacion "prueba"';
+
+\password app_prueba
+--select * from pg_shadow where usename='app_prueba';
+--ENCRYPTED PASSWORD 'mdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+\du+
+\dn
+
+--DROP SCHEMA IF EXISTS app_prueba;
+CREATE SCHEMA AUTHORIZATION app_prueba;
+
+--Los usuarios son comunes para toda la instancia, los esquemas pertenecen a una base de datos concreta
+\dn
+
+
+--## Crear un tablespace
+\! ls $HOME/curso
+\! mkdir $HOME/curso/tbs_app_prueba
+
+--DROP TABLESPACE IF EXISTS tbs_app_prueba;
+CREATE TABLESPACE tbs_app_prueba OWNER app_prueba LOCATION '/home/postgres/curso/tbs_app_prueba';
+COMMENT ON TABLESPACE tbs_app_prueba IS 'Tablespace para el usuario "app_prueba"';
+\db
+\! ls -l $PGDATA/pg_tblspc
+
+
+--## Crear una tabla en ese esquema
+--## hay que modificar a trust: vi $PGDATA/pg_hba.conf ; pg_ctl reload
+\c bd_pruebas1 app_prueba
+SHOW search_path;
+
+CREATE TABLE test1 (
+        id integer,
+        nombre varchar(10)
+) TABLESPACE tbs_app_prueba;
+
+INSERT INTO test1 VALUES (1, 'Uno');
+INSERT INTO test1 VALUES (2, 'Dos');
+INSERT INTO test1 VALUES (3, 'Tres');
+INSERT INTO test1 VALUES (4, 'Cuatro');
+INSERT INTO test1 VALUES (5, 'Cinco');
+
+\dt
+\d test1
+
+\! ls -l /home/postgres/curso/tbs_app_prueba
+\! ls -l ...
+
+-- Ruta donde guarda la tabla
+SELECT pg_relation_filenode('test1'),pg_relation_filepath('test1');
+-- Ocupacion en disco de la tabla
+select pg_size_pretty(pg_relation_size('app_prueba.test1'));
+
+DROP TABLESPACE tbs_app_prueba;
+--## error porque no esta vacio
+ALTER TABLE app_prueba.test1 SET TABLESPACE pg_default;
+DROP TABLESPACE tbs_app_prueba;
+\d test1
+\! ls -l /home/postgres/curso/tbs_app_prueba
+\! rmdir /home/postgres/curso/tbs_app_prueba
+
+--## Conectarse a template1 y Crear una extensión en template1
+\c template1 postgres
+
+--Extensiones instaladas
+select * from pg_extension;
+\dx
+--Extensiones Disponibles
+select * from pg_available_extensions;
+
+CREATE EXTENSION adminpack;
+\dx
+
+
+--## crear una nueva Base de Datos y comprobar que tiene la extension creada en template1
+CREATE DATABASE bd_pruebas2;
+COMMENT ON DATABASE bd_pruebas2 IS 'BD 2 para pruebas.';
+
+\l
+
+\c bd_pruebas2
+\dx
+
+--## crear una tabla, como el usuario "postgres" no tiene ningún esquema asociado, la creará en el esquema "public"
+show search_path;
+CREATE TABLE test2 (
+        id integer,
+        nombre varchar(10)
+);
+\dt public.*
+
+--## Borrar una base de datos
+DROP DATABASE bd_pruebas2;
+--## error porque se esta conectado a ella
+\c postgres
+--## Borrar una base de datos, aunque tenga cosas no pregunta nada
+DROP DATABASE bd_pruebas2;
+
+
+
+--## Pruebas de acceso desde otros equipos, configurar "pg_hba.conf"

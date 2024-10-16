@@ -1,0 +1,36 @@
+VirtualBox, añadir reenvío de puerto (Configuración/Red/Avanzadas/Reenvío de puertos):
+guestpgadmin, TCP, 5050, 5050
+
+#En la máquina virtual se instala el pgAdmin como servidor
+#usará Phyton como servidor Web, no configurar de esta manera en un servidor de Producción !!!
+#en un servidor de producción deberá estar detrás de un Apache o de un NGINX
+
+
+#con el usuario root
+
+#Para la instalación se usan los paquetes disponibles desde el repositorio de Postgresql.org
+#Hay que habilitar el repositorio epel por dependencias
+yum install epel-release
+yum repolist
+yum install pgadmin4
+
+#cambio IP de escucha de Python
+less /usr/lib/python2.7/site-packages/pgadmin4-web/config.py
+  DEFAULT_SERVER = '127.0.0.1'
+  DEFAULT_SERVER_PORT = 5050
+vi /usr/lib/python2.7/site-packages/pgadmin4-web/config_local.py
+  DEFAULT_SERVER = '0.0.0.0'
+
+#La primera vez se arranca de esta forma para poder introducir los datos del administrador
+/usr/bin/python2 /usr/lib/python2.7/site-packages/pgadmin4-web/pgAdmin4.py
+  Email address: cursopg@csic.es
+  Password: cursopg
+  CTRL+C
+
+#Después ya se puede arrancar como un servicio
+systemctl list-unit-files pgadmin4.service
+systemctl start pgadmin4.service
+systemctl status pgadmin4.service
+
+#Desde un navegador del PC se accede usando el reenvío de puertos de vBox:
+http://localhost:5050/

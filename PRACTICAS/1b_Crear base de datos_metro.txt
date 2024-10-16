@@ -1,0 +1,6 @@
+Crear una base de datos metro, con las líneas, las estaciones y la relaciones 
+entre estas.
+1 linea -> N estaciones
+1 estación -> N lineas
+
+añadir al constraint "on delete cascade"

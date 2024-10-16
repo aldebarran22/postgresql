@@ -1,0 +1,16 @@
+Crear una base de datos (cuentas) y añadir las contraints a las 3 tablas
+Utilizar SQL DDL y la herramienta Query Tool
+
+Tabla 1: account
+user_id – clave principal
+nombre de usuario: único y no nulo
+contraseña – no nula
+correo electrónico: único y no nulo
+creado_on – no nulo
+last_login – nulo
+
+Tabla 2: roles
+tabla que consta de dos columnas: role_idy role_name
+
+Tabla 3: account_roles
+tabla que tiene tres columnas : user_idy role_id.grant_date

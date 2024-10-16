@@ -1,0 +1,177 @@
+## TEMA 9 - Backups
+
+export PGPORT=5432
+export PGDATA=/home/postgres/curso/I1/
+cd
+
+psql bd_pruebas1
+  DROP TABLE IF EXISTS app_prueba.tdocumentos;
+
+  DROP DATABASE IF EXISTS bd_pruebas2;
+  CREATE DATABASE bd_pruebas2;
+  COMMENT ON DATABASE bd_pruebas2 IS 'BD 2 para pruebas.';
+  DROP DATABASE IF EXISTS bd_pruebas3;
+  CREATE DATABASE bd_pruebas3;
+  COMMENT ON DATABASE bd_pruebas3 IS 'BD 3 para pruebas.';
+  \l
+  \q
+
+
+##################################################
+## copia de seguridad logica de toda una instancia
+pg_dumpall -v -f prueba_dumpall.sql 2>&1 | tee prueba_dumpall.log
+
+pwd
+less prueba_dumpall.log
+less prueba_dumpall.sql
+
+
+## backups de bases de datos individuales
+## copia de una base de datos en texto plano
+pg_dump -v -f bdpruebas1.sql bd_pruebas1
+less bdpruebas1.sql
+
+## copia de una base de datos con -Fc (formato binario)
+pg_dump -v -Fc -f bdpruebas1.dump bd_pruebas1 2>&1 | tee bdpruebas1.dump.log
+less bdpruebas1.dump.log
+
+## listar el contenido
+pg_restore -l bdpruebas1.dump > bdpruebas1.dump.list
+less bdpruebas1.dump.list
+
+## recuperacion de una base de datos en otra
+psql bd_pruebas2
+  \dn
+  \q
+pg_restore -v -d bd_pruebas2 bdpruebas1.dump
+
+psql bd_pruebas2
+  \dn
+  select * from app_prueba.test1;
+  \q
+
+
+## volcar parte del contenido del fichero dump en formato binario a un texto plano
+vi bdpruebas1.dump.list  ##comentar todo menos la tabla 'test1' poniendo ; al inicio linea
+
+pg_restore -L bdpruebas1.dump.list -f tabla.sql bdpruebas1.dump
+vi tabla.sql			 ##se cambia el nombre de la tabla 'test1' a 'test2'
+
+## se recupera la tabla 'test2'
+psql bd_pruebas2 < tabla.sql
+psql bd_pruebas2
+  select * from app_prueba.test2;
+  \q
+
+
+## recuperar el contenido de un esquema sin datos (da error)
+pg_restore -v -s -d bd_pruebas3 -n app_prueba bdpruebas1.dump
+
+## se crea el esquema porque al no existir no ha funcionado el pg_restore anterior
+psql bd_pruebas3
+  CREATE SCHEMA AUTHORIZATION app_prueba;
+  \dn
+  \q
+## recuperar el contenido de un esquema sin datos
+pg_restore -v -s -d bd_pruebas3 -n app_prueba bdpruebas1.dump
+
+## se comprueba que la tabla esta vacia
+psql bd_pruebas3 -c "select * from app_prueba.test1"
+ 
+
+## recuperar solo los datos de una tabla
+pg_restore -v -a -d bd_pruebas3 -n app_prueba -t test1 bdpruebas1.dump
+psql bd_pruebas3 -c "select * from app_prueba.test1"
+
+
+
+
+##################################################
+## copia de seguridad a nivel fisico con la instancia parada
+pg_ctl stop
+mkdir -p $HOME/curso/backups/I1-antesTema10
+cp -a $PGDATA/* $HOME/curso/backups/I1-antesTema10
+pg_ctl start -D $PGDATA
+
+
+
+##################################################
+## Habilitar el archivado WAL
+vi $PGDATA/postgresql.conf
+  wal_level = replica
+  archive_mode = on
+  archive_command = '/curso/archive_wal_curso.sh -P %p -F %f -S $(hostname)'
+  max_wal_senders = 4 
+  #puede ser necesario: wal_keep_segments = 5
+pg_ctl restart
+
+
+##################################################
+## copia de seguridad a nivel fisico de toda una instancia con pg_basebackup
+pg_basebackup -vPRzFt -l "prueba BaseBackup Instancia1" -D $HOME/curso/backups/pg_basebackup_I1
+ls $HOME/curso/backups/
+tar -vtzf $HOME/curso/backups/pg_basebackup_I1/base.tar.gz | less
+tar -vtzf $HOME/curso/backups/pg_basebackup_I1/pg_wal.tar.gz | less
+
+
+
+
+
+************* AQUI
+
+
+
+##################################################
+## copia de seguridad a nivel fisico de toda una instancia de forma manual
+
+## hacer copia de seguridad manual, siguiendo los pasos del apartado 9.2.2 del TEMA 9
+psql
+  \! ls -lrt $PGDATA/pg_wal
+  \! ls -lrt $HOME/curso/wal/I1
+  SELECT pg_current_wal_lsn();
+  SELECT pg_walfile_name(pg_current_wal_lsn());
+
+--## Inicio Sentencias Backup
+  SELECT pg_switch_wal();
+  SELECT pg_start_backup('prueba hot-backup manual', false, false);
+--## Fin Sentencias Backup
+
+  SELECT pg_current_wal_lsn();
+  SELECT pg_walfile_name(pg_current_wal_lsn());
+  \! ls -lrt $PGDATA/pg_wal
+  \! ls -lrt $HOME/curso/wal/I1
+
+--## Inicio Sentencias Backup
+  \! mkdir $HOME/curso/backups/base_I1
+  \! cp -a $PGDATA/* $HOME/curso/backups/base_I1
+
+  SELECT pg_create_restore_point('hot-backup1');
+  \t
+  \o /home/postgres/curso/backups/base_I1/backup_label
+  SELECT pg_stop_backup(false, true);
+  \o
+  \t
+  SELECT pg_switch_wal();
+--## Fin Sentencias Backup
+  \q
+
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+ls -lrt $HOME/curso/wal/I1
+ls $HOME/curso/backups/base_I1
+
+--## Inicio Sentencias Backup
+##la información sacada por pg_stop_backup al archivo "backup_label"
+##quedarse con los datos que aparecen entre comillas dobles del segundo
+##y quitar los espacios en blanco al principio y final de las lineas
+vi $HOME/curso/backups/base_I1/backup_label
+touch $HOME/curso/backups/base_I1/tablespace_map
+
+##otros ficheros se pueden eliminar de la copia
+rm $HOME/curso/backups/base_I1/postmaster.*
+
+##guardamos los WALs
+mkdir $HOME/curso/backups/base_I1/wal_generados
+mv $HOME/curso/wal/I1/* $HOME/curso/backups/base_I1/wal_generados
+chmod 440 $HOME/curso/backups/base_I1/wal_generados/*
+--## Fin Sentencias Backup

@@ -1,0 +1,8 @@
+1;"Bebidas"
+2;"Condimentos"
+3;"Reposteria"
+4;"Lacteos"
+5;"Granos/Cereales"
+6;"Carnes"
+7;"Frutas/Verduras"
+8;"Pescado/Marisco"

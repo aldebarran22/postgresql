@@ -1,0 +1,77 @@
+1;"Te Dharamsala";1;18.00;39
+2;"Cerveza tibetana Barley";1;19.00;17
+3;"Sirope de regaliz";2;10.00;13
+4;"Especias Cajun del chef Anton";2;22.00;53
+5;"Mezcla Gumbo del chef Anton";2;21.35;0
+6;"Mermelada de grosellas de la abuela";2;25.00;120
+7;"Peras secas organicas del tio Bob";7;30.00;15
+8;"Salsa de arandanos Northwoods";2;40.00;6
+9;"Buey Mishi Kobe";6;97.00;29
+10;"Pez espada";8;31.00;31
+11;"Queso Cabrales";4;21.00;22
+12;"Queso Manchego La Pastora";4;38.00;86
+13;"Algas Konbu";8;6.00;24
+14;"Cuajada de judias";7;23.25;35
+15;"Salsa de soja baja en sodio";2;15.50;39
+16;"Postre de merengue Pavlova";3;17.45;29
+17;"Cordero Alice Springs";6;39.00;0
+18;"Langostinos tigre Carnarvon";8;62.50;42
+19;"Pastas de te de chocolate";3;9.20;25
+20;"Mermelada de Sir Rodney's";3;81.00;40
+21;"Bollos de Sir Rodney's";3;10.00;3
+22;"Pan de centeno crujiente estilo Gustaf's";5;21.00;104
+23;"Pan fino";5;9.00;61
+24;"Refresco Guarana Fantastica";1;4.50;20
+25;"Crema de chocolate y nueces NuNuCa";3;14.00;76
+26;"Ositos de goma Gumbar";3;31.23;15
+27;"Chocolate Schoggi";3;43.90;49
+28;"Col fermentada Rossle";7;45.60;26
+29;"Salchicha Thuringer";6;123.79;0
+30;"Arenque blanco del noroeste";8;25.89;10
+31;"Queso gorgonzola Telino";4;12.50;0
+32;"Queso Mascarpone Fabioli";4;32.00;9
+33;"Queso de cabra";4;2.50;112
+34;"Cerveza Sasquatch";1;14.00;111
+35;"Cerveza negra Steeleye";1;18.00;20
+36;"Escabeche de arenque";8;19.00;112
+37;"Salmon ahumado Gravad";8;26.00;11
+38;"Vino Cote de Blaye";1;263.50;17
+39;"Licor verde Chartreuse";1;18.00;69
+40;"Carne de cangrejo de Boston";8;18.40;123
+41;"Crema de almejas estilo Nueva Inglaterra";8;9.65;85
+42;"Tallarines de Singapur";5;14.00;26
+43;"Cafe de Malasia";1;46.00;17
+44;"Azucar negra Malacca";2;19.45;27
+45;"Arenque ahumado";8;9.50;5
+46;"Arenque salado";8;12.00;95
+47;"Galletas Zaanse";3;9.50;36
+48;"Chocolate holandes";3;12.75;15
+49;"Regaliz";3;20.00;10
+50;"Chocolate blanco";3;16.25;65
+51;"Manzanas secas Manjimup";7;53.00;20
+52;"Cereales para Filo";5;7.00;38
+53;"Empanada de carne";6;32.80;0
+54;"Empanada de cerdo";6;7.45;21
+55;"Pate chino";6;24.00;115
+56;"Gnocchi de la abuela Alicia";5;38.00;21
+57;"Raviolis Angelo";5;19.50;36
+58;"Caracoles de Borgonya";8;13.25;62
+59;"Raclet de queso Courdavault";4;55.00;79
+60;"Camembert Pierrot";4;34.00;19
+61;"Sirope de arce";2;28.50;113
+62;"Tarta de azucar";3;49.30;17
+63;"Sandwich de vegetales";2;43.90;24
+64;"Bollos de pan de Wimmer";5;33.25;22
+65;"Salsa de pimiento picante de Luisiana";2;21.05;76
+66;"Especias picantes de Luisiana";2;17.00;4
+67;"Cerveza Laughing Lumberjack";1;14.00;52
+68;"Barras de pan de Escocia";3;12.50;6
+69;"Queso Gudbrandsdals";4;36.00;26
+70;"Cerveza Outback";1;15.00;15
+71;"Crema de queso Flotemys";4;21.50;26
+72;"Queso Mozzarella Giovanni";4;34.80;14
+73;"Caviar rojo";8;15.00;101
+74;"Queso de soja Longlife";7;10.00;4
+75;"Cerveza Klosterbier Rhonbrau";1;7.75;125
+76;"Licor Cloudberry";1;18.00;57
+77;"Salsa verde original Frankfurter";2;13.00;32

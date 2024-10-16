@@ -1,0 +1,41 @@
+## TEMAS 3 - Instalar Binarios PostgreSQL
+
+https://yum.postgresql.org/repopackages.php#pg11
+URL Repositorio RPM para "CentOS 7 - x86_64":
+  yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+  yum list postgres*
+  yum -y install postgresql11-server.x86_64 postgresql11-contrib.x86_64
+
+
+Cambios para el usuario "postgres":
+  usermod -d /home/postgres postgres
+  mkdir /home/postgres
+  chown postgres:postgres /home/postgres
+  mv /var/lib/pgsql/.bash_profile /home/postgres/
+  passwd postgres
+
+  vi /home/postgres/.bash_profile
+    PGDATA=/home/postgres/curso/I1
+    export PGDATA
+    LANG=es_ES.UTF-8
+    export LANG
+    PGENGINE=/usr/pgsql-11/bin/
+    export PGENGINE
+    PGPORT=5432
+    export PGPORT
+    PATH=$PATH:$PGENGINE
+    export PATH
+
+
+Instalar otros paquetes:
+  yum -y install pg_repack11 pg_top11 pgcenter
+
+
+Habilitar PostgreSQL como servicio:
+  systemctl list-unit-files | grep postgres
+  systemctl enable postgresql-11
+
+  vi /usr/lib/systemd/system/postgresql-11.service
+    Environment=PGDATA=/home/postgres/curso/I1/
+
+

@@ -1,0 +1,5 @@
+Utilizando la sentencia CASE en un SQL agrupar las compañias de envíos
+según el número de pedidos que realiza cada:
+inferior a 250 --> Simple
+inferior a 300 --> Normal
+superior a 300 --> super

@@ -1,0 +1,164 @@
+## TEMA 10 - PITR, prueba de simulacion de backup por snapshot, sin usar pg_start_backup
+
+export PGPORT=5432
+export PGDATA=$HOME/curso/I3
+pg_ctl stop
+
+## se recupera la copia original
+cd
+rm -rf $HOME/curso/I3
+mkdir -p $HOME/curso/I3
+mkdir -p $HOME/curso/wal/I3
+chmod 0700 $HOME/curso/I3
+cp -a $HOME/curso/backups/I1-antesTema10/* $HOME/curso/I3
+
+## poner en modo archivado
+vi $PGDATA/postgresql.conf
+  wal_level = replica
+  archive_mode = on
+  archive_command = '/curso/archive_wal_curso.sh -P %p -F %f -S $(hostname)'
+  max_wal_senders = 4 
+
+rm $PGDATA/log/*
+pg_ctl start -D $PGDATA
+
+ls -lrt $HOME/curso/wal/I3
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+## se comprueban los log en: less $PGDATA/log/postgresql-2019-
+
+## objetos de referencia
+psql bd_pruebas1 app_prueba
+ CREATE TABLE test3 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO test3 VALUES (10, 'Referencia');
+ \dt
+ SELECT * FROM test3;
+ \q
+
+## se copia en caliente sin indicar que se va ha hacer el backup, del directorio de I3
+## simulacion de backup por snapshot
+mkdir $HOME/curso/backups/base_I3-NOpg_start_backup
+cp -a $PGDATA/* $HOME/curso/backups/base_I3-NOpg_start_backup
+ls -la $HOME/curso/backups/base_I3-NOpg_start_backup
+cat $HOME/curso/backups/base_I3-NOpg_start_backup/postmaster.pid
+
+## se crean mas objetos
+psql
+ DROP DATABASE IF EXISTS bd_pruebas4;
+ CREATE DATABASE bd_pruebas4;
+ COMMENT ON DATABASE bd_pruebas4 IS 'BD 4 para pruebas PITR';
+ \l
+ \c bd_pruebas4
+ CREATE TABLE tpitr1 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr1 VALUES (1, 'Uno');
+ INSERT INTO tpitr1 VALUES (2, 'Dos');
+ SELECT * FROM tpitr1;
+ 
+ --creamos un punto de recuperacion (no guarda archivos wal)
+ SELECT pg_create_restore_point('rp-pitr1');
+ SELECT pg_current_wal_lsn();
+ SELECT pg_walfile_name(pg_current_wal_lsn());
+ \! ls -lrt $PGDATA/pg_wal
+ \! ls -lrt $HOME/curso/wal/I3
+ 
+ CREATE TABLE tpitr2 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr2 VALUES (3, 'Tres');
+ INSERT INTO tpitr2 VALUES (4, 'Cuatro');
+ \dt
+ --forzamos a almacenar archivos WAL para que archive el punto de recuperacion
+ SELECT pg_switch_wal();
+ SELECT pg_current_wal_lsn();
+ SELECT pg_walfile_name(pg_current_wal_lsn());
+ \! ls -lrt $PGDATA/pg_wal
+ \! ls -lrt $HOME/curso/wal/I3
+ 
+ CREATE TABLE tpitr3 (
+        id integer,
+        nombre varchar(10)
+ );
+ INSERT INTO tpitr3 VALUES (5, 'cinco');
+ \dt
+ \q
+
+
+### Desde otro terminal se para la base de datos con un kill -9 del postgres principal
+###
+
+
+### Pruebas de recuperacion de tema10.txt
+export PGPORT=5432
+export PGDATA=$HOME/curso/I2
+rm $PGDATA/log/*.log
+
+
+
+## copia de los ultimos WAL hasta el fallo
+cd
+ls -l $HOME/curso/I3/pg_wal/
+ls -l $HOME/curso/wal/I3
+cp -a $HOME/curso/I3/pg_wal/<ultimos> $HOME/curso/wal/I3
+chmod 0600 $HOME/curso/wal/I3/*
+
+## recuperacion de la copia de seguridad
+rm -rf $HOME/curso/I2/*
+rm -rf $HOME/curso/wal/I2/*
+chmod 0700 $HOME/curso/I2
+cp -a $HOME/curso/backups/base_I3-NOpg_start_backup/* $PGDATA
+rm $PGDATA/postmaster.pid
+ls $PGDATA
+
+## NO BORRAR LO RESTAURADO EN $PGDATA/pg_wal
+
+echo "restore_command = 'cp /home/postgres/curso/wal/I3/%f %p'" > $PGDATA/recovery.conf
+echo "recovery_target_name = 'rp-pitr1'" >> $PGDATA/recovery.conf
+cat $PGDATA/recovery.conf
+
+rm $PGDATA/log/*.log
+pg_ctl start -D $PGDATA
+ls $PGDATA/recovery*
+ls -lrt $HOME/curso/wal/I3
+ls -lrt $PGDATA/pg_wal
+## se comprueban los log en: less $PGDATA/log/postgresql-2019-
+
+## por defecto "hot_standby = on" por lo que se permite acceso de lectura
+## se comprueban que estan los datos hasta el primer punto de recuperacion 'rp-pitr1'
+psql bd_pruebas1 app_prueba
+ SELECT pg_is_in_recovery();
+ \l
+ SELECT * FROM test3;
+ \c bd_pruebas4 postgres
+ \dt
+ SELECT * FROM tpitr1;
+ \q
+
+pg_ctl stop
+
+## se recupera todo lo que falta
+echo "restore_command = 'cp /home/postgres/curso/wal/I3/%f %p'" > $PGDATA/recovery.conf
+cat $PGDATA/recovery.conf
+
+pg_ctl start -D $PGDATA
+ls $PGDATA/recovery*
+ls -lrt $PGDATA/pg_wal
+ls -lrt $PGDATA/pg_wal/archive_status
+ls $PGDATA/log/
+## se comprueba el log: less $PGDATA/log/postgresql-2019-0
+
+## se comprueban que estan los datos hasta que se apago I3
+## al recuperar todos los datos sale automáticamente del modo recuperacion
+psql bd_pruebas4
+ SELECT pg_is_in_recovery();
+ \l
+ \dt
+ SELECT * FROM tpitr3;
+ \q
+

@@ -1,0 +1,66 @@
+VENTA TELEFÓNICA
+
+Entidades:
+pedidos, productos, categorias, proveedores, clientes, empleados, 
+empresasTransporte, facturas
+
+Considerar el precio de Venta y el precio del producto.
+Tablas principales / Tablas Secundarias 
+
+Pedidos:
+id (*) PK
+dni-cli FK 
+dni-emp FK
+idEmpresa FK
+fechas
+
+pedidos-productos
+idPedido (*) PK FK
+idProducto (*) PK FK
+precio (de venta)
+cantidad
+descuento
+
+Productos:
+id (*) PK
+nombre
+idcategoria FK
+idproveedor FK
+precio (actual)
+stock
+
+Categorias:
+id (*) PK
+nombre
+
+Proveedores:
+id (*) PK
+nombre
+datos de contacto
+
+Clientes:
+dni (*) PK
+datos de contacto (tno, email, movil)
+dirección
+
+Empleados:
+dni (*) PK
+nombre
+cargo
+
+EmpresasTransporte:
+id (*) PK
+nombre
+contacto
+
+Facturas:
+numero (*) PK
+dni-cli
+fecha
+
+pedidos-facturas:
+idnumero (*) PK FK
+idpedido (*) PK FK
+
+
+
