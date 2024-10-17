@@ -1,6 +1,6 @@
 --BASE DE DATOS DE EJEMPLO PARA CURSO
 
-CREATE EXTENSION POSTGIS;
+--CREATE EXTENSION POSTGIS;
 
 -- TABLA DE CAMPAÑAS
 
@@ -131,6 +131,7 @@ CREATE TABLE fauna (
 );
 
 -- TABLA DE TALLAS
+/*
 DROP TABLE IF EXISTS tallas;
 CREATE TABLE tallas (
     survey VARCHAR(10),
@@ -146,7 +147,7 @@ CREATE TABLE tallas (
     FOREIGN KEY (survey, platform_code, operation_code) REFERENCES operations(survey, platform_code, operation_code),
     FOREIGN KEY (species_code) REFERENCES species(species_code) 
 );
-
+*/
 -- Aquí te dejo unas funciones que uso yo para calcular clase de talla a partir de una talla en mm, un json...
 -- Lo mismo te sirven de inspiración para ejercicio, etc.
 
@@ -155,6 +156,7 @@ CREATE TABLE tallas (
 --      Second parameter of the function call stands for output
 --      length class in centimeters ('c') or half centimeters ('m')
 
+/*
 DROP FUNCTION IF EXISTS length_class(jsonb, character varying);
 CREATE FUNCTION length_class(jsonb, character varying) RETURNS numeric
     LANGUAGE plpgsql
@@ -230,11 +232,11 @@ BEGIN
     END IF;
 END;
 $_$;
-
--- POR ULTIMO, LAS SENTENCIAS \copy POR SI TE QUIERES AHORRRAR TIEMPO
-\copy survey from 'survey.csv' with delimiter ';' csv header
-\copy operations (survey,platform_code,operation_code,towstart_lat,towstart_lon,towstart_depth,towstart_tmp,towend_lat,towend_lon,towend_depth,towend_tmp,valid) from 'operations.csv' with delimiter ';' csv header
-\copy species from 'species.csv' with delimiter ';' csv header
-\copy biologicos from 'biologicos.csv' with delimiter ';' csv header
-\copy fauna from 'fauna.csv' with delimiter ';' csv header
-\copy tallas from 'tallas.csv' with delimiter ';' csv header
+*/
+-- POR ULTIMO, LAS SENTENCIAS \copy POR SI TE QUIERES AHORRAR TIEMPO
+--copy survey from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\survey.csv' with delimiter ';' csv header
+--copy operations (survey,platform_code,operation_code,towstart_lat,towstart_lon,towstart_depth,towstart_tmp,towend_lat,towend_lon,towend_depth,towend_tmp,valid) from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\operations.csv' with delimiter ';' csv header
+--copy species from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\species.csv' with delimiter ';' csv header
+--copy biologicos from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\biologicos.csv' with delimiter ';' csv header
+--copy fauna from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\fauna.csv' with delimiter ';' csv header
+--copy tallas from 'C:\Users\ANGELA\Desktop\postgresql\repositorio\BD CSIC\tallas.csv' with delimiter ';' csv header
