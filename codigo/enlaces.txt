@@ -1,2 +1,0 @@
-round en postgre
-https://stackoverflow.com/questions/13113096/how-to-round-an-average-to-2-decimal-places-in-postgresql
