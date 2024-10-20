@@ -12,21 +12,21 @@ species_code;scientific_name;common_name
 10085;Raja miraletus;Raya de espejos
 10090;Raja clavata;Raya de clavos
 10092;Leucoraja naevus;Raya santiaguesa
-10100;Dasyatis centroura;Raya látigo lija
-10102;Pteroplatytrygon violacea;Raya látigo violeta
+10100;Dasyatis centroura;Raya latigo lija
+10102;Pteroplatytrygon violacea;Raya latigo violeta
 10103;Dasyatis pastinaca;Chucho
-10104;Myliobatis aquila;Águila marina
+10104;Myliobatis aquila;aguila marina
 10107;Pteromylaeus bovinus;Obispo
 10113;Torpedo marmorata;Tembladera
 10114;Chimaera monstrosa;Quimera
-10137;Alosa alosa;Sábalo
+10137;Alosa alosa;Sabalo
 10138;Alosa fallax;Saboga
 10141;Sardinella aurita;Alacha
 10152;Sardina pilchardus;Sardina
-10156;Engraulis encrasicolus;Boquerón
+10156;Engraulis encrasicolus;Boqueron
 10159;Xenodermichthys copei;
 10172;Argentina silus;Tomasa
-10173;Argentina sphyraena;Peón
+10173;Argentina sphyraena;Peon
 10177;Maurolicus muelleri;Anchoa de fondo
 10180;Argyropelecus olfersi;Pez hacha luminoso
 10185;Myctophum punctatum;Linterna negra
@@ -35,24 +35,24 @@ species_code;scientific_name;common_name
 10225;Belone belone belone;Aguja
 10251;Gadiculus argenteus argenteus;Marujito
 10260;Molva macrophthalma;Maruca azul
-10262;Phycis blennoides;Brótola de fango
-10263;Phycis phycis;Brótola de roca
+10262;Phycis blennoides;Brotola de fango
+10263;Phycis phycis;Brotola de roca
 10265;Melanogrammus aeglefinus;Eglefino
 10274;Trisopterus esmarkii;Faneca noruega
 10275;Trisopterus minutus;Faneca menor
 10276;Trisopterus luscus;Faneca
 10277;Micromesistius poutassou;Bacaladilla
 10283;Merluccius merluccius;Merluza europea
-10299;Nezumia aequalis;Pez ratón
+10299;Nezumia aequalis;Pez raton
 10301;Coelorinchus caelorhincus caelorhincus;Pez rata chato
-10302;Malacocephalus laevis;Abámbolo negro
+10302;Malacocephalus laevis;Abambolo negro
 10310;Macroramphosus scolopax;Trompetero
 10315;Beryx splendens;Alfonsino
 10320;Zeus faber;Pez de san Pedro
 10321;Zenopsis conchifer;Pez de san Pedro americano
 10323;Capros aper;Ochavo
 10325;Sphyraena spp;Espetones
-10330;Sphyraena sphyraena;Espetón
+10330;Sphyraena sphyraena;Espeton
 10335;Mugil cephalus;Pardete
 10337;Liza ramada;Morragute
 10338;Liza aurata;Lisa
@@ -62,11 +62,11 @@ species_code;scientific_name;common_name
 10391;Serranus cabrilla;Cabrilla
 10394;Serranus hepatus;Merillo
 10397;Dicentrarchus punctatus;Baila
-10403;Epigonus telescopus;Tomás
+10403;Epigonus telescopus;Tomas
 10407;Pomatomus saltatrix;Anjova
 10414;Trachurus trachurus;Jurel
 10415;Trachurus picturatus;Chicharro
-10416;Trachurus mediterraneus;Jurel mediterráneo
+10416;Trachurus mediterraneus;Jurel mediterraneo
 10423;Caranx rhonchus;Jurel real
 10426;Trachinotus ovatus;Palometa blanca
 10441;Brama brama;Palometa negra
@@ -79,15 +79,15 @@ species_code;scientific_name;common_name
 10488;Pagellus erythrinus;Breca
 10489;Pagellus acarne;Aligote
 10490;Pagellus bellottii bellottii;Breca chata
-10493;Diplodus annularis;Raspallón
+10493;Diplodus annularis;Raspallon
 10494;Diplodus sargus sargus;Sargo
 10495;Diplodus vulgaris;Mojarra
 10496;Diplodus cervinus cervinus;Sargo breado
 10497;Diplodus puntazzo;Sargo picudo
 10499;Dentex gibbosus;Sama de pluma
 10500;Dentex macrophthalmus;Cachucho
-10502;Dentex dentex;Dentón
-10506;Dentex maroccanus;Sama marroquí
+10502;Dentex dentex;Denton
+10506;Dentex maroccanus;Sama marroqui
 10507;Spondyliosoma cantharus;Chopa
 10512;Pagrus pagrus;Pargo
 10519;Sparus aurata;Dorada
@@ -100,7 +100,7 @@ species_code;scientific_name;common_name
 10541;Mullus surmuletus;Salmonete de roca
 10542;Mullus barbatus;Salmonete de fango
 10556;Labrus mixtus;Gallano
-10579;Trachinus draco;Escorpión
+10579;Trachinus draco;Escorpion
 10599;Blennius ocellaris;Torillo
 10617;Callionymus lyra;Guitarra
 10618;Callionymus maculatus;Dragoncillo moteado
@@ -110,24 +110,24 @@ species_code;scientific_name;common_name
 10642;Scomber scombrus;Caballa
 10653;Auxis thazard thazard;Melva negra
 10673;Xiphias gladius;Pez espada
-10675;Stromateus fiatola;Pámpano
+10675;Stromateus fiatola;Pampano
 10681;Schedophilus medusophagus;Rufo de aguas malas
 10684;Pomatoschistus spp;Gobitos
 10693;Deltentosteus quadrimaculatus;Gobio de cuatro manchas
 10696;Aphia minuta;Chanquete
 10697;Lesueurigobius sanzoi;Gobio de Sanzo
-10720;Scorpaena notata;Escórpora
+10720;Scorpaena notata;Escorpora
 10725;Chelidonichthys lastoviza;Borracho
 10726;Triglidae;Rubios
 10731;Chelidonichthys lucerna;Bejel
 10734;Lepidotrigla dieuzeidei;Cabete espinudo
 10735;Lepidotrigla cavillone;Cabete
-10737;Chelidonichthys gurnardus;Perlón
+10737;Chelidonichthys gurnardus;Perlon
 10739;Chelidonichthys obscurus;Arete oscuro
 10754;Arnoglossus laterna;Serradell
 10764;Glyptocephalus cynoglossus;Mendo
 10765;Hippoglossoides platessoides;Platija americana
-10783;Dicologlossa cuneata;Acedía
+10783;Dicologlossa cuneata;Acedia
 10792;Microchirus variegatus;Soldada
 10795;Symphurus nigrescens;Pelada
 10799;Lepidorhombus whiffiagonis;Gallo del norte
@@ -140,7 +140,7 @@ species_code;scientific_name;common_name
 10822;Lophius piscatorius;Rape blanco
 10823;Lophius budegassa;Rape negro
 10826;Cepola macrophthalma;Cinta
-10863;Carcharhinus spp;Tiburones pelágicos
+10863;Carcharhinus spp;Tiburones pelagicos
 10945;Lepidion lepidion;Bertorella de fondo
 10950;Lepidion eques;Bertorella brava
 10989;Sphoeroides pachygaster;Tamboril de hondura
@@ -148,27 +148,27 @@ species_code;scientific_name;common_name
 11116;Symphodus spp;Bodiones
 11173;Aspitrigla cuculus;Cuco
 11191;Hippocampus hippocampus;Caballo marino
-11192;Diplodus bellottii;Raspallón senegalés
+11192;Diplodus bellottii;Raspallon senegales
 11593;Microchirus boscanion;Lenguadito luso
-11635;Acipenser baerii baerii;Esturión siberiano
+11635;Acipenser baerii baerii;Esturion siberiano
 12822;Spicara flexuosa;
 12856;Aborichthys elongatus;
 13390;Microchirus azevia;Lenguado basto
-15000;Larva leptocéfala;Larvas
+15000;Larva leptocefala;Larvas
 20005;Eriphia verrucosa;Cangrejo moruno
 20011;Rochinia carpenteri;
 20013;Squilla mantis;Galera
-20017;Alpheus glaber;Camarón de pinzas
-20059;Melicertus kerathurus;Langostino mediterráneo
+20017;Alpheus glaber;Camaron de pinzas
+20059;Melicertus kerathurus;Langostino mediterraneo
 20066;Parapenaeus longirostris;Gamba blanca
-20077;Plesionika heterocarpus;Camarón flecha
-20080;Chlorotocus crassicornis;Camarón real
-20088;Plesionika antigai;Camarón catalán
-20123;Solenocera membranacea;Cabezón atlántico
+20077;Plesionika heterocarpus;Camaron flecha
+20080;Chlorotocus crassicornis;Camaron real
+20088;Plesionika antigai;Camaron catalan
+20123;Solenocera membranacea;Cabezon atlantico
 20134;Pagurus excavatus;
 20146;Goneplax rhomboides rhomboides;Violinista
 20157;Polybius henslowi;Patelo
-20169;Liocarcinus depurator;Nécora falsa
+20169;Liocarcinus depurator;Necora falsa
 20184;Paromola cuvieri;Centolla de hondura
 20190;Maja squinado;Centolla europea
 20194;Nephrops norvegicus;Cigala
@@ -187,19 +187,19 @@ species_code;scientific_name;common_name
 21678;Aristaeopsis edwardsiana;
 21764;Maja brachydactyla;
 22000;Cirripedia;
-30070;Chiton olivaceus;Quitón
+30070;Chiton olivaceus;Quiton
 30072;Ranella olearia;Bocina
 30081;Bolinus brandaris;Cañailla
 30092;Ostrea spp;Ostras
-30098;Pectinidae;Pectínidos
+30098;Pectinidae;Pectinidos
 30110;Acanthocardia aculeata;Marolo
 30144;Rondeletiola minor;
 30151;Sepietta oweniana;
 30158;Sepiola spp;
 30159;Sepia officinalis;Sepia
 30160;Sepia elegans;Choquito
-30162;Loligo media;Calamarín menor
-30163;Loligo subulata;Calamarín picudo
+30162;Loligo media;Calamarin menor
+30163;Loligo subulata;Calamarin picudo
 30166;Loligo spp;Calamares
 30167;Loligo vulgaris;Calamar
 30169;Loligo forbesi;Calamar veteado
@@ -215,7 +215,7 @@ species_code;scientific_name;common_name
 30241;Sepiolidae;Globitos
 30242;Sepietta spp;
 30302;Nudibranchia;
-30305;Pinna nobilis;Nácar
+30305;Pinna nobilis;Nacar
 30426;Chlamys spp;
 30428;Anomia spp;
 30471;Aplysia spp;Liebres de mar
