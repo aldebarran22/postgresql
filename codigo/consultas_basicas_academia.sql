@@ -75,3 +75,19 @@ select distinct nacimiento from ac_alumnos;
 select nacimiento from ac_alumnos group by nacimiento;
 
 
+-- Obtener los alumnos de Madrid, Segovia y Bilbao:
+select nombre, nacimiento from ac_alumnos 
+where nacimiento = 'madrid' or nacimiento = 'bilbao' or nacimiento = 'segovia';
+
+select nombre, nacimiento from ac_alumnos 
+where nacimiento in ('madrid','bilbao','segovia');
+
+-- El resto de provincias:
+select nombre, nacimiento from ac_alumnos 
+where nacimiento not in ('madrid','bilbao','segovia');
+
+-- Alumnos cuyo nombre empieza por 'A': poner % en vez de *
+select * from ac_alumnos where nombre like 'A%';
+
+
+
