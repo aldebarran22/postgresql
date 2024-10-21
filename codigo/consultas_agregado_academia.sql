@@ -21,3 +21,5 @@ group by nacimiento order by 2 desc;
 select count(codasig) as cuenta, sum(precio) as suma, avg(precio) as media, min(precio) as minimo, max(precio) as maximo
 from ac_asignaturas;
 
+
+
