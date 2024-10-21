@@ -1,0 +1,14 @@
+SQL
+  DDL -> LENGUAJE DE DEFINICION DE DATOS  (REAR OBJETOS: TABLAS, VISTAS, FUNCIONES ...)
+	create: crear un objeto
+	drop: borrar objetos
+	alter: modificar un objeto existente	
+
+
+  DML -> LENGUAJE DE MANIPULACION DE DATOS (CONSULTAS)
+	consultas de selección: SELECT
+
+	consultas de acción:
+		insert: insertar filas en una tabla
+		delete: borrar filas de una tabla
+		update: actualizar columnas de una tabla
