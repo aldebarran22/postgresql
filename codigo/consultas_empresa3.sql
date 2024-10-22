@@ -25,8 +25,17 @@ where idpedido = 10248;
 select sum(cast( (preciounidad * cantidad * (1-descuento/100)) as numeric)) as total
 from public.tbdetallespedidos where idpedido = 10248;
 
-
 -- Productos: cuántos se empaquetan en frascos:
+select count(*) from tbproductos where cantidadporunidad like '%frascos%';
+
+-- Obtener los países donde se emiten pedidos:
+select distinct paisdestinatario from tbpedidos order by 1;
+select paisdestinatario from tbpedidos group by 1 order by 1;
+
+-- Cuántos pedidos se han generado por país:
+select paisdestinatario, count(*) as numero_pedidos
+from tbpedidos group by 1 order by 2 desc;
+
 
 
 
