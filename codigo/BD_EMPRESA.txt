@@ -1,20 +1,78 @@
 DISEÑO DE BD:
 
-- PEDIDOS
+- PEDIDOS:
+  codigo (pk)
+  cod_empleado (fk)
+  cod_cliente (fk)
+  cod_empresa (fk)
+  fecha_pedido
+  fecha_envio
+  fecha_entrega
+  cargo
+
+
+- PEDIDOS-PRODUCTOS
+  cod_pedido (pk, fk)
+  cod_producto (pk, fk)
+  cantidad
+  precio
+  descuento
 
 
 - PRODUCTOS
+  codigo (pk)
+  cod_categoria (fk)
+  cod_proveedor (fk)
+  precio
+  descripción
+  
 
+- PROVEEDORES
+  codigo (pk)
+  cif
+  nombre
+  dirección
+  teléfono 
 
 - CATEGORIAS
+  codigo (pk)
+  nombre
 
 
 - EMPLEADOS
+  codigo (pk)
+  nombre
+  apellidos
+  cargo
 
 
 - EMPRESAS TRANSPORTES
-
+  codigo (pk)
+  nombre
+  cif
+  dirección
+  
 
 - CLIENTES
+  idcliente (pk)
+  nombre
+  dirección
+  teléfono
+  email
 
 
+
+Relaciones entre entidades:
+1 Pedido -> N productos
+
+
+Relaciones:
+1->1
+
+1->N
+  1 dpo -> N empleados
+  1 empleado -> 1 dpo
+
+N<->M
+	1->N
+	1->M
