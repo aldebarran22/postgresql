@@ -70,8 +70,41 @@ having count(*) > 50
 order by 2 desc;
 
 -- Que países tiene más de 50 pedidos en el año 1997:
+select paisdestinatario, count(*) as numero_pedidos
+from tbpedidos 
+where date_part('year', fechapedido) = 1997
+group by 1 
+having count(*) > 50
+order by 2 desc;
 
 
+-- Que países tiene entre 30 y 50 pedidos en el año 1997:
+select paisdestinatario, count(*) as numero_pedidos
+from tbpedidos 
+where date_part('year', fechapedido) = 1997
+group by 1 
+having count(*) between 30 and 50
+order by 2 desc;
+
+-- Campos calculados con fechas:
+select id, fechapedido, fechaenvio, fechaenvio - fechapedido as dias_almacen 
+from tbpedidos;
+
+-- Media en días del tiempo que se tarda en preparar los pedidos:
+select round(cast (avg(fechaenvio - fechapedido) as numeric), 2) as media_dias_almacen, 
+min(fechaenvio - fechapedido) as minimo,
+max(fechaenvio - fechapedido) as maximo
+from tbpedidos;
+
+select * from tbpedidos 
+where fechapedido is null or fechaenvio is null or fechaentrega is null;
+
+-- Actualizar la fechaenvio  a fechapedido + 5
+update tbpedidos set fechaenvio = fechapedido + 5 where fechaenvio is null;
+
+
+-- Los 5 productos más caros:
+select nombre, preciounidad from tbproductos order by 2 desc limit 5;
 
 
 
