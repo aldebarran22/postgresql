@@ -36,6 +36,40 @@ select paisdestinatario from tbpedidos group by 1 order by 1;
 select paisdestinatario, count(*) as numero_pedidos
 from tbpedidos group by 1 order by 2 desc;
 
+-- Pedidos realizados em el 1997:
+select * from tbpedidos where fechapedido between '1/1/1997' and '31/12/1997';
+
+-- Cuántos pedidos se han generado por país en el año 1997:
+select paisdestinatario, date_part('year', fechapedido) as año, count(*) as numero_pedidos
+from tbpedidos 
+where fechapedido between '1/1/1997' and '31/12/1997'
+group by 1, 2 order by 3 desc;
+
+
+select
+paisdestinatario,
+count(id),
+extract (year from fechapedido)
+from public.tbpedidos
+where fechapedido between '1/1/1997' and '31/12/1997'
+group by 1, extract (year from fechapedido)
+order by 2 desc;
+
+
+select paisdestinatario, date_part('year', fechapedido) as año
+from tbpedidos 
+where fechapedido between '1/1/1997' and '31/12/1997'
+order by 2,1 desc;
+
+-- Que países tiene más de 50 pedidos en total:
+-- Condición afecta al grupo --> HAVING
+select paisdestinatario, count(*) as numero_pedidos
+from tbpedidos 
+group by 1 
+having count(*) > 50
+order by 2 desc;
+
+-- Que países tiene más de 50 pedidos en el año 1997:
 
 
 
