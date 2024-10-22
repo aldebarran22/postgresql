@@ -48,5 +48,12 @@ inner join tbproveedores pr on pr.id = p.idproveedor
 order by 1,2,3;
 
 
+select c.nombre as categoria, pr.nombre as proveedor, count(p.id) as cuenta
+from tbcategorias c 
+inner join tbproductos p on c.id = p.idcategoria
+inner join tbproveedores pr on pr.id = p.idproveedor
+group by 1,2
+order by 1,2,3;
+
 
 
