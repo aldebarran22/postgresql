@@ -63,3 +63,19 @@ on co.nombre = ce.nombre where ce.nombre is null;
 select ce.nombre 
 from comida co right join cena ce
 on co.nombre = ce.nombre where co.nombre is null;
+
+--insert into comida values('Miguel');  Miguel se apunta dos veces a comer como lo detectamos?
+select nombre
+from comida
+group by 1
+having  count(*) > 1;
+
+-- Quienes van un solo evento: coalesce devuelve el primer valor distinto de null.
+select distinct coalesce(co.nombre, ce.nombre) as nombre
+from comida co full join cena ce
+on co.nombre = ce.nombre
+where co.nombre is null or ce.nombre is null;
+
+
+
+
