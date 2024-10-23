@@ -59,6 +59,10 @@ select nombre from comida
 intersect
 select nombre from cena;
 
+-- Con subconsultas:
+select nombre from comida 
+where nombre in (select nombre from cena);
+
 
 
 -- Quien va solo a comer:
@@ -71,12 +75,19 @@ select nombre from comida
 except
 select nombre from cena;
 
-
+-- Con subconsultas:
+select nombre from comida 
+where nombre not in (select nombre from cena);
 
 -- Quien va solo a cenar:
 select ce.nombre 
 from comida co right join cena ce
 on co.nombre = ce.nombre where co.nombre is null;
+
+-- Con subconsultas:
+select nombre from cena 
+where nombre not in (select nombre from comida);
+
 
 -- Lo mismo con operadores a nivel de conjunto:
 select nombre from cena
@@ -119,3 +130,8 @@ select nombre from comida union all select nombre from cena; -- NO QUITA REPETID
 
 -- Cuantas personas han participado en los eventos;
 select count(*) from (select nombre from comida union select nombre from cena);
+
+
+
+
+
