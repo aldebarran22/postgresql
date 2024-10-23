@@ -54,15 +54,36 @@ select co.nombre, ce.nombre
 from comida co inner join cena ce
 on co.nombre = ce.nombre;
 
+-- Lo mismo con operadores a nivel de conjunto:
+select nombre from comida
+intersect
+select nombre from cena;
+
+
+
 -- Quien va solo a comer:
 select co.nombre 
 from comida co left join cena ce
 on co.nombre = ce.nombre where ce.nombre is null;
 
+-- Lo mismo con operadores a nivel de conjunto:
+select nombre from comida
+except
+select nombre from cena;
+
+
+
 -- Quien va solo a cenar:
 select ce.nombre 
 from comida co right join cena ce
 on co.nombre = ce.nombre where co.nombre is null;
+
+-- Lo mismo con operadores a nivel de conjunto:
+select nombre from cena
+except
+select nombre from comida;
+
+
 
 --insert into comida values('Miguel');  Miguel se apunta dos veces a comer como lo detectamos?
 select nombre
@@ -70,12 +91,31 @@ from comida
 group by 1
 having  count(*) > 1;
 
+
+
 -- Quienes van un solo evento: coalesce devuelve el primer valor distinto de null.
 select distinct coalesce(co.nombre, ce.nombre) as nombre
 from comida co full join cena ce
 on co.nombre = ce.nombre
 where co.nombre is null or ce.nombre is null;
 
+-- Con conjuntos: (comida - cena) | (cena - comida)
+-- | union, & intersección, - diferencia
+(select nombre from comida except select nombre from cena)
+union
+(select nombre from cena except select nombre from comida);
+
+(select nombre from cena union select nombre from comida)
+except
+(select nombre from cena intersect select nombre from comida);
 
 
+-- union:
+select nombre from comida union select nombre from cena; -- QUITA LOS REPETIDOS
 
+-- union all;
+select nombre from comida union all select nombre from cena; -- NO QUITA REPETIDOS
+
+
+-- Cuantas personas han participado en los eventos;
+select count(*) from (select nombre from comida union select nombre from cena);
