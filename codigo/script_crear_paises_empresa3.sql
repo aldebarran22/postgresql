@@ -79,6 +79,18 @@ ALTER TABLE IF EXISTS public.tbpedidos2
     ON DELETE NO ACTION
     NOT VALID;
 
+
+-- Borrar las foreign key de tbpedidos (para dejarla aislada):
+alter table tbdetallespedidos drop constraint "fk-pedidos";
+
+
+ALTER TABLE IF EXISTS public.tbdetallespedidos
+    ADD CONSTRAINT "fk-pedidos" FOREIGN KEY (idpedido)
+    REFERENCES public.tbpedidos2 (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;
+
 -- Borrar la tabla de pedidos original:
 drop table if exists tbpedidos;
 
@@ -86,5 +98,3 @@ drop table if exists tbpedidos;
 -- Renombrar la tabla de pedidos2 a pedidos:
 alter table tbpedidos2 rename to tbpedidos;
 
-
---CREATE TABLE tbproductos2 (LIKE tbproductos INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING INDEXES);
