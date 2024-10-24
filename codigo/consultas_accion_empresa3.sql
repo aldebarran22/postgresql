@@ -28,3 +28,14 @@ update tbproductos set preciounidad = preciounidad * 1.05 where unidadesenpedido
 
 -- Bajar un 20% las Bebidas:
 update tbproductos set preciounidad = preciounidad * 0.8 where idcategoria = (select id from tbcategorias where nombre='Bebidas');
+
+
+-- Crear una tabla con el resultado de una consulta:
+-- create table nombre_tabla as select ...
+create table tbpedidos_suiza as
+select * from tbpedidos where paisdestinatario = 'Suiza';
+
+
+
+
+

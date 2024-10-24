@@ -83,6 +83,29 @@ group by 1
 order by 2 desc;
 
 
+-- Consulta con With:
+with pedidos as
+(select c.nombre as nombreCliente, e.nombre || ' ' || e.apellidos as nombreEmpleado, ep.nombre as Empresa, fechaPedido
+from tbpedidos p 
+inner join tbclientes c on p.idcliente = c.id
+inner join public.tbcompaniaenvios ep on ep.id = p.idcompanya
+inner join tbempleados e on e.id = p.idempleado)
+select * from pedidos where fechapedido between '1/1/1997' and '31/12/1997';
+
+
+-- Consultas preparadas:
+-- Dar de alta nuevas categorias:
+prepare insertar_categoria(varchar) as
+insert into tbcategorias(id,nombre) values((select max(id)+1 from tbcategorias), $1);
+
+-- Ejecutar la consulta parametrizada
+execute insertar_categoria('Cine');
+
+-- Borrar
+deallocate insertar_categoria;
+
+
+
 
 
 
