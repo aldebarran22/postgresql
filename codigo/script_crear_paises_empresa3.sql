@@ -79,5 +79,12 @@ ALTER TABLE IF EXISTS public.tbpedidos2
     ON DELETE NO ACTION
     NOT VALID;
 
+-- Borrar la tabla de pedidos original:
+drop table if exists tbpedidos;
+
+
+-- Renombrar la tabla de pedidos2 a pedidos:
+alter table tbpedidos2 rename to tbpedidos;
+
 
 --CREATE TABLE tbproductos2 (LIKE tbproductos INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING INDEXES);
