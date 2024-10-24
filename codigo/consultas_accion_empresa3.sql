@@ -15,3 +15,16 @@ from tbempleados where apellidos='King' and nombre='Robert';
 insert into tbempleados(id, apellidos, nombre, cargo, tratamiento, fechanacimiento, ciudad, pais, telefono)
 select (select max(id)+1 from tbempleados), apellidos, 'Sara', 'Gerente', 'Srta.', '1990-07-05', ciudad, pais, telefono
 from tbempleados where apellidos='King' and nombre='Robert';
+
+
+-- Actualizar datos:
+-- update tabla set campo1=valor1, campo2=valor2, ... where condicion;
+
+select count(*) from tbproductos where unidadesenpedido = 10;
+
+-- Subir los precios un 5% de los productos que tengamos 10 unidades en existencia:
+update tbproductos set preciounidad = preciounidad * 1.05 where unidadesenpedido = 10;
+
+
+-- Bajar un 20% las Bebidas:
+update tbproductos set preciounidad = preciounidad * 0.8 where idcategoria = (select id from tbcategorias where nombre='Bebidas');
