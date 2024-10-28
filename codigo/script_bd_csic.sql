@@ -129,7 +129,27 @@ on delete no action;
 alter table local.biologicos
 add column id serial primary key;
 
+-- Añadir en la tabla local.survey la FK del platform_code
+alter table local.survey
+add constraint plaform_code_fk
+foreign key (platform_code) references local.platforms(platform_code)
+on delete no action;
 
+
+-- Añadir en la tabla local.biologicos la FK del species_code
+alter table local.biologicos
+add constraint species_code_fk
+foreign key (species_code) references local.species(species_code)
+on delete no action;
+
+-- Añadir una PK a la tabla local.species:
+alter table local.species
+add primary key(species_code);
+
+
+select species_code, count(*) from local.species
+group by 1
+order by 2 desc;
 
 
 
