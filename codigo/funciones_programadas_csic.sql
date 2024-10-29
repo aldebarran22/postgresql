@@ -96,3 +96,9 @@ from biologicos b
 inner join species s on b.species_code = s.species_code
 where b.survey = 'CAMP2' and b.platform_code = '201176' and b.species_code = '10323';
 
+
+
+
+
+
+
