@@ -34,6 +34,11 @@ insert into tbproductos values((select max(id)+1 from tbproductos), 'Red Bull II
 refresh materialized view vista_categoria_productos;
 
 
+-- Vistas del sistema:
+select * from pg_tables;
+
+
+
 
 
 
