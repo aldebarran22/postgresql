@@ -73,10 +73,13 @@ select calcularPesoMedio('10152', 0);
 select distinct category_code, species_code, calcularNumMuestras(species_code, category_code)  from biologicos;
 
 -- Quita primero los repetidos: más rápida
-select category_code, species_code, calcularNumMuestras(species_code, category_code)
-from (select category_code, species_code from biologicos group by 1,2);
+select species_code, category_code,
+calcularNumMuestras(species_code, category_code) as cuenta,
+calcularPesoMedio(species_code, category_code) as peso_medio
+from (select category_code, species_code, talla from biologicos group by 1,2)
+order by 1,2;
 
-select category_code, species_code, count(*) as cuenta, round(avg(pesotot),2) as  peso_medio
+select species_code, category_code, count(*) as cuenta, round(avg(pesotot),2) as  peso_medio, round(avg(talla),2) as talla_media
 from biologicos
 group by 1,2
 order by 1,2;
