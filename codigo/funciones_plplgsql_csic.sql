@@ -49,7 +49,25 @@ end;
 $$
 language 'plpgsql';
 
+
+-- Crear otra función que devuelva el peso medio por specie y categoria:
+create or replace function calcularPesoMedio(cod_specie varchar, cod_categoria integer) returns float
+as
+$$
+declare
+	media float;
+begin
+	select round(avg(pesotot),2) into media from biologicos
+	where species_code = cod_specie and category_code = cod_categoria;
+	return media;
+end;
+$$
+language 'plpgsql';
+
+
+
 select calcularNumMuestras('10152', 0);
+select calcularPesoMedio('10152', 0);
 
 -- Número de categorias en biologicos: mas lenta, hace el mismo cálculo varias veces
 select distinct category_code, species_code, calcularNumMuestras(species_code, category_code)  from biologicos;
@@ -58,9 +76,10 @@ select distinct category_code, species_code, calcularNumMuestras(species_code, c
 select category_code, species_code, calcularNumMuestras(species_code, category_code)
 from (select category_code, species_code from biologicos group by 1,2);
 
-select category_code, species_code, count(*) as cuenta
+select category_code, species_code, count(*) as cuenta, round(avg(pesotot),2) as  peso_medio
 from biologicos
-group by 1,2;
+group by 1,2
+order by 1,2;
 
 
 
