@@ -152,6 +152,15 @@ group by 1
 order by 2 desc;
 
 
+-- Comprobar la tabla de local.biologicos con public.biologicos
+select * from public.biologicos;
+
+select s.survey, s.platform_code, o.operation_code, b.species_code, b.category_code, b.sample_id, b.sampling_type
+from local.biologicos b 
+inner join local.operations o on b.idoperation = o.id
+inner join local.survey s on s.id = o.idsurvey;
+
+
 
 
 
