@@ -57,7 +57,31 @@ order by 4 desc;
 
 -- Una función SQL que a partir de: survey, platform_code, species_code
 -- devuelva el porcentaje muestreado:
+create function calcularMuestreo(campaña varchar, barco varchar, cod_especie varchar) returns float
+as 'select round(m.peso_total_muestras / c.peso_total_capturas * 100, 2) as porcentaje_muestreado
+from capturas c
+inner join 
+muestreo m
+on c.survey = m.survey and c.platform_code = m.platform_code and c.species_code = m.species_code
+where c.survey = $1 and c.platform_code = $2 and c.species_code = $3'
+language 'sql';
 
+-- Consulta anterior utilizando la funcion:
+select calcularMuestreo('CAMP2', '201176', '10323');
+
+
+select survey, platform_code, species_code, calcularMuestreo(survey, platform_code, species_code) as porcentaje from
+(select survey, platform_code, species_code from fauna group by 1,2,3)
+where calcularMuestreo(survey, platform_code, species_code) is not null
+order by 4 desc;
+
+
+select * from (
+select survey, platform_code, species_code, calcularMuestreo(survey, platform_code, species_code) as porcentaje from
+(select survey, platform_code, species_code from fauna group by 1,2,3)
+where calcularMuestreo(survey, platform_code, species_code) is not null
+order by 4 desc)
+where porcentaje is not null;
 
 
 
