@@ -44,7 +44,7 @@ language 'plpgsql';
 select ecuacion(1,5,4);
 select ecuacion(1,2,3);
 
--- Pruebas desde PLPGSQL: bloque de código anónimo
+-- Pruebas desde PLPGSQL: bloque de código anónimo para llamar a la función
 do $$
 declare
 	soluciones float[2];
@@ -54,11 +54,15 @@ declare
 begin
 	soluciones := ecuacion(1,5,4);
 
-	x1 := soluciones[0];
-	x2 := soluciones[1];
-
-	raise info 'Soluciones: X1 = %, X2 = %', x1, x2;
-
+	if soluciones is null then
+		raise info 'No hay solución';
+		
+	else
+		x1 := soluciones[0];
+		x2 := soluciones[1];
+		
+		raise info 'Soluciones: X1 = %, X2 = %', x1, x2;
+	end if;
 end $$;
 
 
