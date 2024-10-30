@@ -37,3 +37,5 @@ select count(*) from tbpedidos where paisdestinatario='Suiza';
 delete from tbpedidos where paisdestinatario='Suiza';
 
 select * from tbpedidos_historico;
+
+delete from tbpedidos where paisdestinatario='Austria';
