@@ -4,8 +4,7 @@
 -- producto 1: te tiene 24 unidades en existencia, precio 18
 -- producto 2: cerveza tiene 17 uds en existencia, precio 19
 
-create or replace function actualizar_existencias()
-returns trigger as $actualizar_productos$
+create or replace function actualizar_existencias() returns trigger as $actualizar_productos$
 begin
 
 	update tbproductos
@@ -13,7 +12,7 @@ begin
 	where id = new.idproducto;
 	
 end;
-$actualizar_productos$ language 'plpgsql';
+$actualizar_productos$ language plpgsql;
 
 
 create or replace trigger actualizar_productos
