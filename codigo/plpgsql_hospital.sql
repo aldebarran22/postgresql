@@ -82,5 +82,14 @@ begin
 end $$
 
 
+-- Consultas de comprobación:
+select eq.id, eq.idmedico, p.nombre as medico, pr.perfil, e.especialidad, p2.nombre as celador1
+from public.equipomedico_mal eq 
+inner join public.personal p on p.codigo = eq.idmedico
+inner join public.personal p2 on p2.codigo = eq.idcelador1
+inner join public.perfiles pr on p.idperfil = pr.id
+inner join public.especialidades e on e.id = eq.idespecialidad;
+
+
 
 
