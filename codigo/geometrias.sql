@@ -29,15 +29,20 @@ from capitals where name = 'Madrid';
 -- Añadir el país a la vista:
 
 create or replace view capitales as
-select name, st_y(geom) as latitud, st_x(geom) as longitud,
+select p.name as pais, c.name as capital, st_y(c.geom) as latitud, st_x(c.geom) as longitud,
 case 
-   when sign(st_y(geom)) = 1 and sign(st_x(geom)) = 1 then 1
-   when sign(st_y(geom)) = -1 and sign(st_x(geom)) = 1 then 2
-   when sign(st_y(geom)) = -1 and sign(st_x(geom)) = -1 then 3
+   when sign(st_y(c.geom)) = 1 and sign(st_x(c.geom)) = 1 then 1
+   when sign(st_y(c.geom)) = -1 and sign(st_x(c.geom)) = 1 then 2
+   when sign(st_y(c.geom)) = -1 and sign(st_x(c.geom)) = -1 then 3
    else 4
-end as cuadrante, cuadricula(st_y(geom), st_x(geom)) as cuadricula
-from capitals
+end as cuadrante, cuadricula(st_y(c.geom), st_x(c.geom)) as cuadricula
+from capitals c inner join countries p
+on c.country_id = p.id
 order by 2,3;
+
+drop view capitales;
+
+
 
 create or replace function cuadricula(latitud float, longitud float) returns varchar as
 $$
@@ -82,13 +87,74 @@ language plpgsql;
 
 
 
-select cuadricula, count(*) as numCiudades 
-from capitales
-group by cuadricula
+select * from capitales;
+
+select * from capitales 
+where cuadricula = '415060';
+
+
+-- Calcular las areas de cada pais y ordenar DESC:
+select name, st_area(geom) as area
+from countries
 order by 2 desc;
 
-select name from capitales 
-where cuadricula = '415060';
+-- El nombre del pais mas grande:
+select name, st_area(geom) as area
+from countries
+where st_area(geom) = (select max(st_area(geom)) from countries);
+
+
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(10 10, 15 10, 20 15, 10 15, 10 10)'));
+SELECT ST_Within('POINT(11 12)'::geometry, ST_MakePolygon(ST_GeomFromText('LINESTRING(10 10, 15 10, 20 15, 10 15, 10 10)')));
+
+-- A partir de una coordenada comprobar si cae de un país:
+select name from countries
+where st_within(st_setsrid(st_makepoint(14.68,45.4),4326), geom);
+
+SELECT ST_Distance(st_setsrid(st_makepoint(14.68,45.4),4326), st_setsrid(st_makepoint(-3.68,40.4),4326));
+
+select ST_Distance(ST_Transform(ST_GeomFromText('POINT(-3.68 40.4)',4326),2100),ST_Transform(ST_GeomFromText('POINT(14.68 45.4)',4326),2100))/1000;
+
+
+SELECT ST_SRID(geom) FROM capitals where id=1;
+SELECT ST_SRID(geom) FROM countries where id=1;
+
+
+-- Crear una función que nos devuelva la distancia en kms entre dos capitales:
+create or replace function distanciaKms(ciudad1 varchar, ciudad2 varchar) returns float as
+$$
+declare
+	coordenadas1 geometry;
+	coordenadas2 geometry;
+	kms float := 0;
+	
+begin
+	select geom into coordenadas1 from capitals where name = ciudad1;
+	select geom into coordenadas2 from capitals where name = ciudad2;
+
+	if coordenadas1 is null or coordenadas2 is null then
+		raise notice 'No se encuentran las dos ciudades';
+
+	else
+		raise notice 'Ciudad: %, coordenadas: %', ciudad1, st_astext(coordenadas1);
+		raise notice 'Ciudad: %, coordenadas: %', ciudad2, st_astext(coordenadas2);
+
+		kms := ST_Distance(ST_Transform(coordenadas1,2100),ST_Transform(coordenadas2,2100))/1000;
+	
+	end if;
+
+	return kms;
+end;
+$$
+language plpgsql;
+
+
+
+select distanciaKms('Paris','Madrid');
+
+
+
+
 
 
 
