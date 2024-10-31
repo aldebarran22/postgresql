@@ -26,6 +26,8 @@ from capitals where name = 'Madrid';
 -- Crear una vista con el nombre de la ciudad, lat, lon y el cuadrante:
 -- 1 : NE 2: SE 3: SW 4: NW
 
+-- Añadir el país a la vista:
+
 create or replace view capitales as
 select name, st_y(geom) as latitud, st_x(geom) as longitud,
 case 
@@ -69,7 +71,7 @@ begin
 		resul := '3' || resul;
 
 	else 
-		resul := '4';
+		resul := '4' || resul;
 	end if;
 
 	return replace(resul,' ','');
@@ -80,7 +82,13 @@ language plpgsql;
 
 
 
-select * from capitales;
+select cuadricula, count(*) as numCiudades 
+from capitales
+group by cuadricula
+order by 2 desc;
+
+select name from capitales 
+where cuadricula = '415060';
 
 
 
