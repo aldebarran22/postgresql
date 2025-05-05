@@ -1,0 +1,52 @@
+Tipos de relaciones:
+ N <-> M
+
+1 cliente compra N libros
+1 libro puede ser comprado por N clientes
+
+Autores libros relación N <-> M
+
+
+Libros
+cod (PK)
+titulo
+precio
+
+Autores
+dni (pk)
+nombre
+datos de contacto
+
+autores-libros
+dni (pk)(fk)
+codlibro (pk)(fk)
+
+
+Clientes
+dni(PK)
+nombre
+apellidos
+
+
+Ventas
+cod (pk)
+dni (fk)
+codlibro (fk)
+fecha venta
+precio venta
+
+
+
+
+
+Mes de abril
+1 manual postgre 35 €
+3 ventas del manual: 
+
+En mayo inc. 5%
+
+
+
+
+
+

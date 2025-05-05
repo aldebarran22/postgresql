@@ -1,0 +1,17 @@
+1 persona pertenece a 1 dpo
+
+1 dpo tiene N persona
+
+personas:
+dni  nombre  dpo
+1    aaaa    1
+2    bbbb    1
+3    cccc    2
+
+
+departamentos:
+cod nombre
+1   RRHH
+2   Informática
+3   Compras
+

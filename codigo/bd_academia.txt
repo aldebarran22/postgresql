@@ -1,0 +1,46 @@
+Cursos:
+cod (pk)
+titulo
+horas
+contenido
+
+cursos-profesores:
+cod-curso (pk, fk)
+dni-prof (pk, fk)
+
+Convocatorias:
+cod (pk)
+cod-curso (fk)
+dni-prof (fk)
+num-aula (fk)
+fechaIni
+fechaFin
+horaini
+horafin
+ 
+matriculas:
+dni-alum (pk, fk)
+cod-convocatoria(pk, fk)
+
+Alumnos:
+dni(PK)
+nombre
+telefono
+movil
+email
+
+
+Profesores:
+dni(PK)
+nombre
+telefono
+movil
+email
+
+Aulas:
+numero (pk)
+piso
+bloque
+num_plazas
+
+
