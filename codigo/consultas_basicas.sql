@@ -59,10 +59,20 @@ select nombre, preciounidad, 0.21 as porc_iva, preciounidad * porc_iva as iva, p
 
 select nombre, preciounidad, 0.21 as porc_iva, preciounidad * 0.21 as iva, preciounidad + (preciounidad * 0.21) as total from tbproductos;
 
+-- Utilizar un campo calculado en un criterio: NO SE PUEDE --> ERROR
+select nombre, preciounidad, preciounidad * 0.21 as iva from tbproductos where iva > 5;
+
+select nombre, preciounidad, preciounidad * 0.21 as iva from tbproductos where preciounidad * 0.21 > 5 order by iva;
 
 
 -- Productos que el preciounidad es múltiplo de 5: cast comvierte el tipo double precision a integer:
 select nombre, preciounidad from tbproductos where cast(preciounidad as integer) % 5 = 0;
+
+-- Operador de concatenación ||
+-- El tratamiento, apellido, nombre de los empleados en una sola columna:
+select tratamiento || ' ' ||  nombre || ' ' || apellidos as nombre_completo from tbempleados;
+
+
 
 
 
