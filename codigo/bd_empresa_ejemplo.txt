@@ -1,0 +1,69 @@
+los clientes llaman a los empleados
+los empleados registran los pedidos de uno o varios productos
+los productos están organizados en categorías
+los productos se entregan en la casa del cliente con una empresa de transporte
+los productos se reponen con proveedores
+
+
+Clientes:
+dni (pk)
+nombre_completo
+dirección 
+teléfono
+email
+
+Empresas:
+codigo (pk)
+nombre
+datos_contacto
+
+Pedidos:
+codigo (pk)
+cod-cliente (fk)
+cod-empleado (fk)
+fechapedido
+fechaentrega
+fechaenvio
+cod-empresa (fk)
+
+
+productos-pedidos:
+cod-pedido (pk, fk)
+cod-producto (pk, fk)
+precio-venta
+unidades
+descuento
+
+
+Empleados:
+dni (pk)
+nombre_completo
+
+
+Productos:
+codigo (pk)
+nombre
+cod-categoria (fk)
+cod-proveedor (fk)
+precio
+dimensiones
+existencias
+
+Categorias:
+codigo (pk)
+nombre
+
+
+Proveedores:
+codigo (pk)
+nombre
+datos_contacto
+
+
+
+
+
+
+
+
+
