@@ -46,6 +46,78 @@ select  avg(fechaentrega - fechaenvio) as media_transporte from tbpedidos where 
 
 
 -- Detalles de pedidos:
+-- Cambiar el campo cantidad de tbdetallespedidos que esté a 0 a 5:
+select count(*) as cuenta from tbdetallespedidos where cantidad = 0;
+update tbdetallespedidos set cantidad = 5 where cantidad = 0;
+
+
+-- Cálculo por cada fila y después aplicar una función de agregado:
+-- Crear un campo calculado para obtener el total por producto:
+select idpedido, idproducto, preciounidad, cantidad, preciounidad * cantidad * (1-(descuento/100.0)) as total
+from tbdetallespedidos order  by 1,2;
+
+-- Calcular el total de todos los productos:
+select sum(preciounidad * cantidad * (1-(descuento/100.0))) as total
+from tbdetallespedidos;
+
+-- Errores típicos al agrupar: ERROR idproducto tenemos que aplicar una función de agregado o que agrupe también
+select idpedido, idproducto from tbdetallespedidos
+group by idpedido;
+
+
+-- Sacar el número de productos por pedido: MAL, METEMOS COLUMNAS DE MAS PARA FORMAR GRUPOS
+select idpedido, idproducto, count(*) as cuenta from tbdetallespedidos
+group by idpedido, idproducto;
+
+-- número de productos por pedido:
+select idpedido, count(*) as cuenta from tbdetallespedidos
+group by idpedido order by 1;
+
+
+-- Obtener el importe por pedido:
+select idpedido, sum(preciounidad * cantidad * (1-(descuento/100.0))) as total
+from tbdetallespedidos
+group by 1
+order by 1;
+
+-- Lo mismo que antes pero sólo queremos los pedidos superiores a 3000 eur.
+select idpedido, sum(preciounidad * cantidad * (1-(descuento/100.0))) as total
+from tbdetallespedidos
+group by 1
+having sum(preciounidad * cantidad * (1-(descuento/100.0))) >= 3000
+order by 2 desc;
+
+select idpedido, sum(preciounidad * cantidad * (1-(descuento/100.0))) as total
+from tbdetallespedidos
+group by 1
+having sum(preciounidad * cantidad * (1-(descuento/100.0))) between 3000 and 3050
+order by 2 desc;
+
+
+
+
+
+
+-- Filas sin descuento:
+select * from tbdetallespedidos where descuento = 0;
+
+
+/* Ojo con las prioridades: de mayor a menor
+^ potencia
+* /  %
++ -
+*/
+
+select 7/2.0;
+select 7/2;
+
+select 5+7/2;
+select (5+7)/2;
+
+-- Número de pedidos por pais y cliente:
+select paisdestinatario, idcliente, count(id) as cuenta from tbpedidos
+group by 1,2
+order by 1,2;
 
 
 
