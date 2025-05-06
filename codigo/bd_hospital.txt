@@ -1,0 +1,78 @@
+
+
+personal:
+dni (pk)
+codigo
+idperfil (fk)
+nombre
+apellidos
+dirección
+plaza
+teléfono
+cv
+
+equipos_medicos:
+id (pk)
+id-especialidad (fk)
+dni-medico (fk)
+dni-enfer1 (fk)
+dni-enfer2 (fk)
+
+
+equipos_medicos_celadores:
+id-equipo-medico (pk, fk)
+dni-celador (pk, fk)
+
+
+personal-mutuas:
+dni (pk, fk)
+cif (pk, fk)
+
+
+
+especialidades:
+id (pk)
+especialidad
+dni-jefe-hospital (fk)
+
+
+perfiles:
+id (pk)
+perfil
+
+
+consultas:
+id (pk)
+fecha
+dni-paciente (fk)
+cif-mutua (fk)
+id-equipo-medico (fk)
+urgencias (s/n)
+observaciones
+
+
+pacientes-hospitalizados:
+id (pk)
+id-consultas (fk)
+numeroHab
+nombre-familiar
+telefono-familiar
+
+
+pacientes
+dni (pk)
+nombre
+datos_contacto
+cif-mutua (fk)
+
+
+mutuas:
+cif (pk)
+mutua
+datos_contacto
+
+(tiene un registro:
+mutua -> PRIVADO)
+
+
+
