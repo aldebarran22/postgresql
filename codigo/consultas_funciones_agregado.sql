@@ -94,8 +94,20 @@ having sum(preciounidad * cantidad * (1-(descuento/100.0))) between 3000 and 305
 order by 2 desc;
 
 
+-- Obtener los paises que tienen más de 50 pedidos en el año 1997:
+-- filtrar el año 1997
+select * from tbpedidos where fechapedido between '1997-1-1' and '1997-12-31';
+
+select paisdestinatario, count(id) as cuenta
+from tbpedidos
+where extract(year from fechapedido) = 1997
+group by paisdestinatario
+having count(id) > 50
+order by 2 desc;
 
 
+select current_date, current_date+30; -- Fecha del sistema actual
+select extract(year from current_date) as año; -- el año actual
 
 
 -- Filas sin descuento:
