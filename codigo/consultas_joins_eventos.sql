@@ -62,4 +62,38 @@ select co.nombre from cena ce right join comida co on co.nombre = ce.nombre wher
 select ce.nombre from cena ce left join comida co on ce.nombre = co.nombre where co.nombre is null;
 select ce.nombre from comida co right join cena ce on co.nombre = ce.nombre where co.nombre is null;
 
+-- Una persona se apunta dos veces a comer, ¿cómo lo detectamos?
+insert into comida values('Raquel');
+
+-- Borrar los repetidos de Raquel:
+delete from comida where nombre = 'Raquel';
+
+
+-- Buscar repetidos dentro de la misma tabla: comida
+select nombre, count(nombre) from comida
+group by 1
+having count(nombre) > 1;
+
+-- Obtener las personas que van sólo a unos de los dos eventos, pero no ambos:
+select co.nombre, ce.nombre from comida co full join cena ce on co.nombre = ce.nombre
+where co.nombre is null or ce.nombre is null
+order by co.nombre;
+
+-- Para mostrar solo un nombre y quitar el nulo:
+select coalesce(co.nombre, ce.nombre) as nombre from comida co full join cena ce on co.nombre = ce.nombre
+where co.nombre is null or ce.nombre is null
+order by co.nombre;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
