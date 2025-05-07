@@ -18,6 +18,8 @@ col 1  col 2
 
 c1 = {1,2,3} c2 = {1,3,5}  c1 inner join c2 -> {1,3} intersección de conjuntos
 
+c1 = {1,2,3} c2 = {1,3,5}  la unión => {1,2,3,5}
+
 c1 = {1,2,3} c2 = {1,3,5}  c1 left join c2 ->  c1 - c2 = {2}       diferencia de conjuntos
 c1 = {1,2,3} c2 = {1,3,5}  c2 left join c1 ->  c2 - c1 = {5} 
 
@@ -49,6 +51,7 @@ on t1.col1 = t2.col1
 
 -- QUIEN VA A COMER Y A CENAR
 select co.nombre, ce.nombre from comida co inner join cena ce on co.nombre = ce.nombre;
+select nombre from comida where nombre in (select nombre from cena);
 
 
 -- para ver los nulos
@@ -57,38 +60,24 @@ select co.nombre, ce.nombre from comida co left join cena ce on co.nombre = ce.n
 -- quien va solo a comer:
 select co.nombre from comida co left join cena ce on co.nombre = ce.nombre where ce.nombre is null;
 select co.nombre from cena ce right join comida co on co.nombre = ce.nombre where ce.nombre is null;
+select nombre from comida where nombre not in (select nombre from cena);
+-- hacerlo con operadores a nivel de conjunto:
+select nombre from comida
+except
+select nombre from cena;
+
 
 -- quien va solo a cenar:
 select ce.nombre from cena ce left join comida co on ce.nombre = co.nombre where co.nombre is null;
 select ce.nombre from comida co right join cena ce on co.nombre = ce.nombre where co.nombre is null;
+select nombre from cena where nombre not in (select nombre from comida);
+select nombre from cena
+except
+select nombre from comida;
+
 
 -- Una persona se apunta dos veces a comer, ¿cómo lo detectamos?
 insert into comida values('Raquel');
-
--- Borrar los repetidos de Raquel:
-delete from comida where nombre = 'Raquel';
-
-
--- Buscar repetidos dentro de la misma tabla: comida
-select nombre, count(nombre) from comida
-group by 1
-having count(nombre) > 1;
-
--- Obtener las personas que van sólo a unos de los dos eventos, pero no ambos:
-select co.nombre, ce.nombre from comida co full join cena ce on co.nombre = ce.nombre
-where co.nombre is null or ce.nombre is null
-order by co.nombre;
-
--- Para mostrar solo un nombre y quitar el nulo:
-select coalesce(co.nombre, ce.nombre) as nombre from comida co full join cena ce on co.nombre = ce.nombre
-where co.nombre is null or ce.nombre is null
-order by co.nombre;
-
-
-
-
-
-
 
 
 
