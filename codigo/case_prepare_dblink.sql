@@ -64,6 +64,15 @@ execute buscar_cargo(30,50);
 deallocate buscar_cargo;
 
 
+-- Conexión con dblink a otra BD: en el mismo servidor, bd: academia
+
+-- Crear una conexión:
+select dblink_connect('con_academia', 'dbname=academia user=postgres password=antonio');
+
+-- Crear la consulta:
+select * from dblink('con_academia', 'select * from ac_asignaturas') as t1 (codasig integer, nombreasig varchar, precio integer);
+
+select dblink_disconnect('con_academia');
 
 
 
