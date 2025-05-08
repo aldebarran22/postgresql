@@ -89,7 +89,24 @@ where c.nombre = 'Lacteos';
 update tbproductos set preciounidad = 12 where nombre = 'Queso de cabra';
 
 
+-- Limitar el número de resultados: limit
+-- Offset es el número de registros que nos saltamos, por defecto es 0
+select * from tbproductos order by preciounidad desc limit 10; -- Tamaño de la página 10 (10 resultados)
+select * from tbproductos order by preciounidad desc limit 10 offset 10; -- Tamaño de la página 10 (10 resultados) y nos saltamos 10
 
+-- Tamaño de página 10, y mostramos la tercera página: del 21 al 30
+select * from tbproductos order by preciounidad desc limit 10 offset 20;
+
+-- Saltar los 20 primeros:
+select * from tbproductos order by preciounidad desc offset 20;
+
+
+-- Los 5 productos que más se venden:
+select p.nombre, count(d.idproducto) as num_ventas from tbproductos p inner join tbdetallespedidos d
+on p.id = d.idproducto
+group by p.nombre
+order by 2 desc
+limit 5;
 
 
 
