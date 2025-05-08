@@ -31,14 +31,42 @@ select current_date - (30 * 365);
 
 
 -- Dar de alta en la tabla de empleados a la hermana de Robert King, nombre Sara, edad: la fecha de hoy 30 años antes,
--- Tratamiento: Srta, apellido, pais, telefono, dirección igual que el hermano:
-
-
-
-
-
-
+-- Tratamiento: Srta, apellido, pais, telefono, dirección igual que el hermano, el cargo cambia: Comercial:
+insert into tbempleados
+   select 
+       (select max(id)+1 from tbempleados), 
+       apellidos,
+       'Sara',
+       'Comercial',
+       'Srta.',
+       current_date - interval '38 years',
+       'Albacete-on-the-River',
+       pais,
+       telefono
+   from
+       tbempleados 
+   where nombre='Robert' and apellidos = 'King';
 
 
 
 -- Consultas de actualización (columnas)
+
+-- Subir el precio a las bebidas un 12%
+
+-- 1) Con una subconsulta:
+update tbproductos
+set preciounidad = preciounidad * 1.12
+where idcategoria = (select id from tbcategorias where nombre = 'Bebidas');
+
+
+-- 2) con update ... from, bajar el precio de las Bebidas un 12%
+update tbproductos p
+set preciounidad = preciounidad / 1.12
+from tbcategorias c
+where p.idcategoria = c.id and c.nombre = 'Bebidas';
+
+
+
+
+
+
