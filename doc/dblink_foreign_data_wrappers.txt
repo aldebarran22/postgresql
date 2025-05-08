@@ -1,0 +1,12 @@
+FDW (Foreign Data Wrappers)
+✅ Permite acceder a tablas remotas como si fueran locales. 
+✅ Optimiza consultas utilizando el planificador de PostgreSQL (puede enviar filtros y agregaciones a la base remota). 
+✅ Permite joins eficientes con tablas locales y remotas. 
+✅ Admite paralelismo en consultas (especialmente postgres_fdw). 
+✅ Puede aprovechar índices y estadísticas en la base remota.
+
+🔹 dblink
+⚠️ Es una conexión directa a la base remota pero no optimiza consultas. 
+⚠️ Cada consulta se ejecuta por separado, sin integración profunda con el planificador de PostgreSQL. 
+⚠️ No soporta consultas paralelas, lo que puede ralentizar operaciones en bases grandes. 
+⚠️ Menos eficiente cuando hay muchas consultas o joins con datos remotos.
