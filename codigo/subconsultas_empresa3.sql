@@ -70,7 +70,23 @@ select * from tbproductos where preciounidad = SOME(array[10,20,30]);
 select * from tbproductos where preciounidad in (10,20,30);
 
 -- select .... where campo = any(select ....)
+-- Comprobar si hay algún precio (ANY) / o todos (ALL) de la categoria de bebidas que sea mayor que los precios de los productos lacteos.
 
+select p.nombre, p.preciounidad from tbproductos p
+inner join tbcategorias c on p.idcategoria = c.id
+where c.nombre = 'Bebidas' 
+and p.preciounidad > any(select p.preciounidad from tbproductos p
+							inner join tbcategorias c on p.idcategoria = c.id
+							where c.nombre = 'Lacteos');
+
+
+select p.nombre, p.preciounidad from tbproductos p
+inner join tbcategorias c on p.idcategoria = c.id
+where c.nombre = 'Lacteos';
+
+
+
+update tbproductos set preciounidad = 12 where nombre = 'Queso de cabra';
 
 
 
