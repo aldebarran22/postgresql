@@ -21,3 +21,8 @@ refresh materialized view ultimos_productos;
 -- Debería mostrar los dos nuevos productos
 select * from ultimos_productos;
 
+
+insert into tbproductos values(205, 'Melón', 1, 7, 3, 50, 'cajas de 2kg', 30);
+
+-- No debería de mostrar el último producto:
+select * from ultimos_productos;
