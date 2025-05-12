@@ -26,3 +26,11 @@ insert into tbproductos values(205, 'Melón', 1, 7, 3, 50, 'cajas de 2kg', 30);
 
 -- No debería de mostrar el último producto:
 select * from ultimos_productos;
+
+
+-- Obtener el nombre y la categoria de los últimos productos:
+select p.nombre, c.nombre from ultimos_productos p
+inner join tbcategorias c on c.id = p.idcategoria;
+
+
+
