@@ -55,16 +55,19 @@ $$
 language sql;
 
 
-/*
-create or replace function nuevaCategoria(categoria text) returns boolean as
+
+create or replace function nuevaCategoria(nuevoid numeric, categoria text) returns numeric as
 $$
-	insert into tbcategorias values(select proximoIdCat(), categoria);
-	return found;
+	insert into tbcategorias values(nuevoid, categoria) returning id;
 $$
-language sql;*/
+language sql;
 
 
 -- Prueba funciones:
+select nuevaCategoria(proximoIdCat(), 'Tartas');
+
+
+
 select precioMedioProductosCat('bebidas'), precioMedioProductosCat('BEBIDAS'), precioMedioProductosCat('beBIDaS');
 
 select precioMedioProductos();
