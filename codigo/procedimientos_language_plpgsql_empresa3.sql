@@ -27,5 +27,33 @@ $$
 language 'plpgsql';
 
 
+create or replace procedure eliminarPedido(id_pedido numeric)
+as
+$$
+declare
+	num_regs integer;
+begin
+
+	-- primero borramos los detalles de pedido:
+	delete from tbdetallespedidos where idpedido = id_pedido;
+	get diagnostics num_regs = row_count;
+	raise info 'Se han eliminado % lineas del pedido: %', num_regs, id_pedido;
+
+	-- Borrar el pedido:
+	delete from tbpedidos where id = id_pedido;
+	get diagnostics num_regs = row_count;
+	raise info 'Se ha borrado: % pedidos', num_regs;
+	
+end;
+$$
+language 'plpgsql';
+
+
+
 -- Pruebas de los procedimientos:
 call insertarCategoria('Cine');
+
+delete from tbpedidos where id = 10248;
+
+call eliminarPedido(10248);
+
