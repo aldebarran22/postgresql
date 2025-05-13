@@ -32,15 +32,47 @@ $$
 language sql;
 
 
-create or replace function ultimoDiaMes(fecha date) returns date as
+drop function ultimoDiaMes;
+
+create or replace function ultimoDiaMes(date) returns date as
 $$
-	select date_trunc('month', fecha) + interval '1 month - 1 day';
+	select date_trunc('month', $1) + interval '1 month - 1 day';
 $$
 language sql;
 
 
+create or replace function precioMedioProductos() returns numeric as 
+$$
+	select avg(preciounidad) from tbproductos;
+$$
+language sql;
+
+
+create or replace function precioMedioProductosCat(categoria text) returns numeric as 
+$$
+	select avg(preciounidad) from tbproductos p inner join tbcategorias c on p.idcategoria = c.id where lower(c.nombre) = lower(categoria);
+$$
+language sql;
+
+
+/*
+create or replace function nuevaCategoria(categoria text) returns boolean as
+$$
+	insert into tbcategorias values(select proximoIdCat(), categoria);
+	return found;
+$$
+language sql;*/
+
 
 -- Prueba funciones:
+select precioMedioProductosCat('bebidas'), precioMedioProductosCat('BEBIDAS'), precioMedioProductosCat('beBIDaS');
+
+select precioMedioProductos();
+-- Obtener productos por encima de la media:
+select * from tbproductos where preciounidad > precioMedioProductos() order by preciounidad;
+
+
+
 select getCargoPedido(10248) as cargo;
 select calcularLineaPedido(10248, 1) as subtotal;
 
@@ -53,6 +85,12 @@ select split('hola que tal estas');
 select proximoIdCat();
 
 select date_trunc('month', current_date);
+
+select ultimoDiaMes(current_date);
+
+select fechapedido, ultimoDiaMes(fechapedido) from tbpedidos;
+
+select ultimoDiaMes('2020-02-04');
 
 
 
