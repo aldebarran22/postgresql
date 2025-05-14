@@ -16,6 +16,13 @@ declare
 	-- Cuando queremos coger todos los campos de una tabla, pero de una fila.
 	pedido tbpedidos%rowtype;
 
+	-- Definición de un registro, se puede asociar al resultado de una consulta que tenga más de un campo y no este asociado 
+	-- a una tabla concreta:
+	datos_producto record;
+
+	-- Definición de un alias de una variable:
+	reg alias for datos_producto;
+
 begin
 	-- instrucciones
 	resultado := (1 + iva) * precio;
@@ -33,6 +40,14 @@ begin
 	select * into pedido from tbpedidos;
 	raise info 'pedido: %', pedido;
 	raise info 'id del pedido: %', pedido.id;
+
+	-- Cargar el nombre de la categoria y el nombre del producto de un id concreto:
+	select c.nombre as categoria, p.nombre as producto, p.preciounidad into reg
+	from tbproductos p inner join tbcategorias c on p.idcategoria = c.id
+	where p.id = 1;
+
+	raise info 'Producto: %', reg;
+	raise info 'Nombre producto: %', reg.producto;
 
 end $$;
 
