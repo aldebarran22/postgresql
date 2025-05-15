@@ -133,6 +133,14 @@ select addGeometryColumn('public','paises','coordenadas',4326, 'POINT', 2);
 select dropGeometryColumn('public', 'paises', 'coordenadas');
 
 
+-- Comprobar si una coordenada se encuentra o no dentro del radio (de X metros) de otra coordenadas
+SELECT ST_DWithin(
+    ST_SetSRID(ST_MakePoint(-3.70379, 40.41678), 4326)::geography,
+    ST_SetSRID(ST_MakePoint(-4.6, 40.3851), 4326)::geography,
+    10000
+);
+
+
 
 
 
