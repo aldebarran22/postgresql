@@ -10,14 +10,14 @@ declare
  ubicacion2 geometry;
  
 begin
-	select count(*) into existe1 from ciudades where lower(nombre) = lower(ciudad1);
-	select count(*) into existe2 from ciudades where lower(nombre) = lower(ciudad2);
+	select count(*) into existe1 from capitals where lower(name) = lower(ciudad1);
+	select count(*) into existe2 from capitals where lower(name) = lower(ciudad2);
 
 	if existe1 = 1 and existe2 = 1 then
 				
 		-- Recuperar los dos campos de geometria de las dos ciudades:
-		select ubicacion into ubicacion1 from ciudades where lower(nombre) = lower(ciudad1);
-		select ubicacion into ubicacion2 from ciudades where lower(nombre) = lower(ciudad2);
+		select ubicacion into ubicacion1 from capitals where lower(name) = lower(ciudad1);
+		select ubicacion into ubicacion2 from capitals where lower(name) = lower(ciudad2);
 
 		-- Calcular la distancia:
 		distancia := st_distance(ubicacion1::geography, ubicacion2::geography) / 1000.0;
