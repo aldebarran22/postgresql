@@ -68,6 +68,7 @@ $$
 declare
  existe1 numeric;
  existe2 numeric;
+ distancia numeric;
 
  ubicacion1 geometry;
  ubicacion2 geometry;
@@ -77,11 +78,14 @@ begin
 	select count(*) into existe2 from ciudades where lower(nombre) = lower(ciudad2);
 
 	if existe1 = 1 and existe2 = 1 then
-		-- Calcular la distancia:
+				
 		-- Recuperar los dos campos de geometria de las dos ciudades:
-		
-		
-		return 0;
+		select ubicacion into ubicacion1 from ciudades where lower(nombre) = lower(ciudad1);
+		select ubicacion into ubicacion2 from ciudades where lower(nombre) = lower(ciudad2);
+
+		-- Calcular la distancia:
+		distancia := st_distance(ubicacion1::geography, ubicacion2::geography) / 1000.0;
+		return distancia;
 		
 	else
 		raise exception 'Las dos ciudades deben de existir en la BD: %, %', ciudad1, ciudad2;
@@ -91,13 +95,15 @@ end;
 $$ 
 language 'plpgsql';
 
-select distanciaEntreCiudades('madrid', 'barcelona');
+select distanciaEntreCiudades('a coruña', 'cádiz');
 
 
 -- Añadir una ciudad a la tabla:
 insert into ciudades(nombre, ubicacion) values('Madrid', ST_GeomFromText('POINT(-3.68 40.4)'));
 insert into ciudades(nombre, ubicacion) values('Barcelona', ST_GeomFromText('POINT(2.17 41.38)'));
 insert into ciudades(nombre, ubicacion) values('Cádiz', ST_GeomFromText('POINT(-6.29 36.52)'));
+insert into ciudades(nombre, ubicacion) values('A Coruña', ST_GeomFromText('POINT(-8.39 43.37)'));
+
 
 
 select *, st_astext(ubicacion) from ciudades;
@@ -108,6 +114,26 @@ select st_transform(ubicacion, 3857) from ciudades;
 select st_transform(st_setsrid(st_makepoint(-3.68, 40.4), 4326), 3857);
 
 select st_astext(st_transform(ubicacion, 3857)) from ciudades;
+
+SELECT ST_Distance(
+    ST_SetSRID(ST_MakePoint(-3.70379, 40.41678), 4326)::geography,
+    ST_SetSRID(ST_MakePoint(2.1734, 41.3851), 4326)::geography
+) / 1000 AS distancia_km;
+
+
+create table paises (
+	id serial primary key,
+	pais varchar(40)
+);
+
+-- Parámetros: schema, tabla, nombre_col, SRID, tipo_geometria, 2 (dimensiones)
+select addGeometryColumn('public','paises','coordenadas',4326, 'POINT', 2);
+
+-- Parámetros: schema, tabla, nombre_col
+select dropGeometryColumn('public', 'paises', 'coordenadas');
+
+
+
 
 
 
