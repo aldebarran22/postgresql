@@ -24,3 +24,4 @@ after insert or update or delete on paises.alemania
 for each row execute function paises.registrar_cambio();
 
 
+insert into paises.alemania select * from tbpedidos where idpais=1;
