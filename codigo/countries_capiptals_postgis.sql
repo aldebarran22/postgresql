@@ -16,15 +16,16 @@ begin
 	if existe1 = 1 and existe2 = 1 then
 				
 		-- Recuperar los dos campos de geometria de las dos ciudades:
-		select ubicacion into ubicacion1 from capitals where lower(name) = lower(ciudad1);
-		select ubicacion into ubicacion2 from capitals where lower(name) = lower(ciudad2);
+		select geom into ubicacion1 from capitals where lower(name) = lower(ciudad1) limit 1;
+		select geom into ubicacion2 from capitals where lower(name) = lower(ciudad2) limit 1;
 
 		-- Calcular la distancia:
 		distancia := st_distance(ubicacion1::geography, ubicacion2::geography) / 1000.0;
 		return distancia;
 		
 	else
-		raise exception 'Las dos ciudades deben de existir en la BD: %, %', ciudad1, ciudad2;
+		raise info 'Las dos ciudades deben de existir en la BD: %, %', ciudad1, ciudad2;
+		return -1;
 	end if;
 	
 end;
@@ -52,5 +53,11 @@ select name, st_area(geom) as area, st_perimeter(geom) as perimetro from countri
 
 -- Obtener las distancias en KMs de Madrid al resto de capitales del mundo:
 select name from capitals where name = 'Madrid';
+
+select 'Matrid', name as otra_ciudad, distanciaEntreCiudades('Madrid', name) as kms
+from capitals where name != 'Madrid' order by 3 desc;
+
+
+select * from capitals where name = 'Nicosia';
 
 
