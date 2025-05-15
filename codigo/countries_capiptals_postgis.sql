@@ -61,3 +61,9 @@ from capitals where name != 'Madrid' order by 3 desc;
 select * from capitals where name = 'Nicosia';
 
 
+
+SELECT st_assvg(geom) FROM public.countries where name = 'Spain';
+
+
+
+
