@@ -57,5 +57,9 @@ percentile_cont(0.75) within group (order by nudos) as perc_75
 from trayectoria;
 
 
+-- Asignar un ranking:
+select t.*, rank() over (order by nudos)  as ranking from trayectoria t order by id;
+
+
 
 
